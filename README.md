@@ -24,4 +24,20 @@ bundle install
 Install the solr.yml file from Sunspot.
 rails g sunspot_rails:install
 
+Running
+=======
+
+Start up Solr (bundled with Sunspot's install)
+rake sunsport:solr:run
+
+Build the index for the first time
+rake sunspot:reindex
+
+Testing
+=======
+
+Pending
+
+
+
 Copyright (c) 2011 John Brien Dilts, released under the New BSD License
