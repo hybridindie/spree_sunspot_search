@@ -1,0 +1,14 @@
+<%
+    facets_arr = PRODUCT_OPTION_FACETS
+    facets_arr += PRODUCT_PROPERTY_FACETS
+%>
+<% facets_arr.each do |f| %>
+    <% unless @searcher.products.facet("#{f}_facet").rows.empty? %>
+        <h4><%= t "#{f}_facet" %></h4>
+        <ul>
+            <% @searcher.products.facet("#{f}_facet").rows.each do |row| %>
+                <li><%= link_to(row.value, params.merge("#{f}_facet" => row.value)) %> (<%= row.count %>)</li>
+            <% end %>
+        </ul>
+    <% end %>
+<% end %>
