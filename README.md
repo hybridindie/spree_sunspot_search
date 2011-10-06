@@ -15,9 +15,9 @@ Add spree_sunspot_search to your Gemfile and run bundler.
 
 add the following to the Gemfile if you are not using another solr install locally for testing and development. The rake tasks for starting and stop this for development are included automatically for your use.
 
-`group :test, :development do
-  gem 'sunspot_solr'
-end`
+`group :test, :development do`
+`  gem 'sunspot_solr'`
+`end`
 
 bundle install
 

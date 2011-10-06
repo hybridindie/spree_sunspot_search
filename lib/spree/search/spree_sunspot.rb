@@ -18,10 +18,20 @@ module Spree::Search
           facet("#{prop}_facet")
         end
 
-        #PRODUCT_PRICE_RANGES.each do |range, name|
-        #  with(:price).between(send(range)) if send(range)
-        #end
+        facet(:price) do
+          PRODUCT_PRICE_RANGES.each do |range|
+            row(range) do
+              with(:price, Range.new(range.split('-').first, range.split('-').last))
+            end
+          end
+        end
+          #if send("#{range}")
+          #  r = Range.new(range.split('-').first, range.split('-').last)
+          #  with(:price, r)
+          #end
 
+
+        with(:price, Range.new(price.split('-').first, price.split('-').last)) if price
         with(:taxon_name, taxon_name) if taxon_name
         with(:is_active, true)
 
@@ -47,6 +57,11 @@ module Spree::Search
       PRODUCT_PROPERTY_FACETS.each do |prop|
         @properties[prop] = params["#{prop}_facet"]
       end
+
+      @properties[:price] = params[:price]
+
+
+      
 
     end
 

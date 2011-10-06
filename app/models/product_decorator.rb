@@ -8,7 +8,8 @@ Product.class_eval do
 
     text :description
     boolean :is_active, :using => :is_active?
-    float :price
+    float :price, :trie => true
+    #integer :price
 
     integer :taxon_ids, :multiple => true, :references => Taxon
     string :taxon_name, :multiple => true do
