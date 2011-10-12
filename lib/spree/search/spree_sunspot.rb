@@ -2,7 +2,7 @@ module Spree::Search
   class SpreeSunspot < defined?(Spree::Search::MultiDomain) ? Spree::Search::MultiDomain :  Spree::Search::Base
 
     def retrieve_products
-      products = Sunspot.search([Product]) do
+      products = Sunspot.search(Product) do
         # This is a little tricky to understand
         #     - we are sending the block value as a method
         #     - Spree::Search::Base is using method_missing() to return the param values
@@ -18,6 +18,7 @@ module Spree::Search
           facet("#{prop}_facet")
         end
 
+        with(:price, Range.new(price.split('-').first, price.split('-').last)) if price
         facet(:price) do
           PRODUCT_PRICE_RANGES.each do |range|
             row(range) do
@@ -25,14 +26,11 @@ module Spree::Search
             end
           end
         end
-          #if send("#{range}")
-          #  r = Range.new(range.split('-').first, range.split('-').last)
-          #  with(:price, r)
-          #end
 
-
-        with(:price, Range.new(price.split('-').first, price.split('-').last)) if price
+        # Taxons by name
         with(:taxon_name, taxon_name) if taxon_name
+        # Taxon via categories and the such
+        with(:taxon, taxon) if taxon
         with(:is_active, true)
 
         keywords(query)
@@ -47,9 +45,12 @@ module Spree::Search
 
     def prepare(params)
       super
-      @properties[:taxon_name] = params[:taxon] unless params[:taxon].blank?
+      @properties[:taxon] = params[:taxon] unless params[:taxon].blank?
+      #@properties[:taxon_name] = params[:taxon]
       @properties[:query] = params[:keywords]
 
+      @properties[:price] = params[:price]
+      
       PRODUCT_OPTION_FACETS.each do |option|
         @properties[option] = params["#{option}_facet"]
       end
@@ -57,11 +58,6 @@ module Spree::Search
       PRODUCT_PROPERTY_FACETS.each do |prop|
         @properties[prop] = params["#{prop}_facet"]
       end
-
-      @properties[:price] = params[:price]
-
-
-      
 
     end
 

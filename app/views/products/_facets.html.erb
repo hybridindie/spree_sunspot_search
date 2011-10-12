@@ -12,3 +12,9 @@
         </ul>
     <% end %>
 <% end %>
+<h4><%= t "price_range" %></h4>
+<ul>
+    <% @searcher.products.facet(:price).rows.each do |row| %>
+        <li><%= link_to(t(row.value), params.merge("price" => row.value)) %> (<%= row.count %>)</li>
+    <% end %>
+</ul>
