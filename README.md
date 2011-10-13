@@ -49,6 +49,10 @@ same goes for product options
 
 `PRODUCT_OPTION_FACETS = [:color, :size]`
 
+and price ranges
+
+`PRODUCT_PRICE_RANGES = ["0-25", "25-50", "50-100", "100-150"]
+
 Testing
 =======
 
@@ -57,9 +61,9 @@ Pending
 TODOs
 =====
 
-support for dynamic ranges in the search facets
-
-`with(:price).between(range)`
+*Sorting by facet criteria and Solr analytics (Best result, Popular, etc.)
+*Open the Sunspot DSL to utilise all the additional data and analytics available through Solr
+*Get the Taxon browsing (e.g. Categories) to utilise the Solr data for speed boosts
 
 
 Copyright (c) 2011 John Brien Dilts, released under the New BSD License

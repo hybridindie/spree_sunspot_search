@@ -12,7 +12,7 @@
 <% if params[:keywords] %>
 
   <%= hook :search_results do %>
-    <%= render "shared/products", :products => @products, :taxon => @taxon %>
+    <%= render "shared/sunspot_products", :products => @products, :taxon => @taxon %>
   <% end %>
 
 <% else %>
