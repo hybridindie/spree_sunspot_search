@@ -1,7 +1,7 @@
 SpreeSunspotSearch
 ==================
 
-Adds Solr search to Spree using [Sunspot]:https://github.com/sunspot/sunspot .
+Adds Solr search to Spree using [Sunspot]:https://github.com/sunspot/sunspot . This is a moving targer and is very beta and should be treated as such. This is compatable with the current 0.70 release of Spree only due to gem requirements.
 
 
 Install
@@ -25,6 +25,10 @@ Install the solr.yml file from Sunspot.
 
 `rails g sunspot_rails:install`
 
+Copy the Initializer
+
+`rake spree_sunspot:install`
+
 Running
 =======
 
@@ -39,7 +43,7 @@ Build the index for the first time
 Customise the Facets Shown
 --------------------------
 
-create and initializer and specify you Product Properties and Product Options as an array
+Edit the initializer and specify you Product Properties, Product Options, and Price Ranges as an array
 
 supposing you have model manufacturer and gender as addition properties you would add the following to the initializer
 
@@ -61,6 +65,7 @@ Pending
 TODOs
 =====
 
+*Add an automatic MAX value for price facets (e.g. Above <max_said_value>)
 *Sorting by facet criteria and Solr analytics (Best result, Popular, etc.)
 *Open the Sunspot DSL to utilise all the additional data and analytics available through Solr
 *Get the Taxon browsing (e.g. Categories) to utilise the Solr data for speed boosts

@@ -1,8 +1,8 @@
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'spree_sunspot_search'
-  s.version     = '0.60.1'
-  s.summary     = 'Add Solr seach to Spree via the Sunspot gem'
+  s.version     = '0.10b'
+  s.summary     = 'Add Solr search to Spree via the Sunspot gem'
   s.description = 'Sunspot and Spree have a wonderful baby'
   s.required_ruby_version = '>= 1.8.7'
 
@@ -15,6 +15,6 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.requirements << 'none'
 
-  #s.add_dependency('spree_core', '>= 0.60.1')
   s.add_dependency('sunspot_rails', '>= 1.3.0rc4')
+  s.add_dependency('progress_bar', '>= 0.4.0')
 end
