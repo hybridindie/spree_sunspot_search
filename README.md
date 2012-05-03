@@ -34,7 +34,7 @@ Running
 
 Start up Solr (bundled with Sunspot's install)
 
-`rake sunsport:solr:run`
+`rake sunspot:solr:run`
 
 Build the index for the first time
 
