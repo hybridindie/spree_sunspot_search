@@ -1,7 +1,7 @@
 SpreeSunspotSearch
 ==================
 
-Adds Solr search to Spree using [Sunspot]:https://github.com/sunspot/sunspot . This is a moving targer and is very beta and should be treated as such. This is compatable with the current 0.70 release of Spree only due to gem requirements.
+Adds Solr search to Spree using [Sunspot](https://github.com/sunspot/sunspot). This is a moving targer and is very beta and should be treated as such. This is compatable with the current 0.70 release of Spree only due to gem requirements.
 
 
 Install
@@ -15,9 +15,9 @@ Add spree_sunspot_search to your Gemfile and run bundler.
 
 add the following to the Gemfile if you are not using another solr install locally for testing and development. The rake tasks for starting and stop this for development are included automatically for your use.
 
-`group :test, :development do`
-`  gem 'sunspot_solr'`
-`end`
+	group :test, :development do
+		gem 'sunspot_solr'
+	end
 
 bundle install
 
@@ -55,7 +55,7 @@ same goes for product options
 
 and price ranges
 
-`PRODUCT_PRICE_RANGES = ["0-25", "25-50", "50-100", "100-150"]
+`PRODUCT_PRICE_RANGES = ["0-25", "25-50", "50-100", "100-150"]`
 
 Testing
 =======
