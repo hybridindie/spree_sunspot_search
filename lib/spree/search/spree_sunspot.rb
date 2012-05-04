@@ -21,12 +21,13 @@ module Spree
             end
           end
 
+          order_by sort, order
           with(:is_active, true)
           keywords(query)
           paginate(:page => page, :per_page => per_page)
         end
 
-        @properties[:products] = self.sunspot.results
+        self.sunspot.results
       end
 
       protected
@@ -35,6 +36,9 @@ module Spree
         super
         @properties[:query] = params[:keywords]
         @properties[:price] = params[:price]
+
+        @properties[:sort] = params[:sort] || :score
+        @properties[:order] = params[:order] || :desc
         
         (PRODUCT_OPTION_FACETS + PRODUCT_PROPERTY_FACETS + PRODUCT_OTHER_FACETS + PRODUCT_SHOW_FACETS).each do |name|
           @properties[name] = params["#{name}_facet"]

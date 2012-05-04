@@ -1,0 +1,17 @@
+<%
+if !params[:keywords].blank? 
+	# hate to throw this logic here (messy)
+	# I think it would be worse to create a one-time-use helper method
+	options = PRODUCT_SORT_FIELDS.map do |key, value|
+		# value is sort direction
+		value = [value] if !value.is_a? Array
+		value.map { |sort| [t("sort.#{key}_#{sort}"), url_for(request.params.merge({:sort => key, :order => sort}))] }
+	end
+
+	options = options_for_select(options.flatten(1), url_for(request.params.merge({
+		:sort => params[:sort] || :score,
+		:order => params[:order] || :desc
+	})))
+%>
+<div id="product-list-sort"><%= t(:sort_by) %> <%= select_tag("product_sort_by", options) %></div>
+<% end %>

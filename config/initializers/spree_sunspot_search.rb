@@ -36,3 +36,10 @@ unless defined?(PRODUCT_SHOW_FACETS)
   # in the suggestions partial
   PRODUCT_SHOW_FACETS = [:taxon_name]
 end
+
+unless defined?(PRODUCT_SORT_FIELDS)
+  PRODUCT_SORT_FIELDS = {
+    :score => :desc,
+    :price => [:asc, :desc],
+  }
+end
