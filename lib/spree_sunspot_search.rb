@@ -9,6 +9,7 @@ module SpreeSunspotSearch
 
     initializer "spree.solr_search.preferences", :after => "spree.environment" do |app|
       Spree::Config.searcher_class = Spree::Search::SpreeSunspot
+      Spree::Search::SpreeSunspotConfig = Spree::SunspotSearchConfiguration.new
     end
 
     def self.activate

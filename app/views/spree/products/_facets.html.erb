@@ -1,9 +1,12 @@
-<% facets_arr = PRODUCT_OPTION_FACETS + PRODUCT_PROPERTY_FACETS + PRODUCT_OTHER_FACETS + PRODUCT_SHOW_FACETS %>
-<% facets_arr.each do |f| %>
+<%
+facets_arr = PRODUCT_OPTION_FACETS + PRODUCT_PROPERTY_FACETS + PRODUCT_OTHER_FACETS + PRODUCT_SHOW_FACETS
+limit = Spree::Search::SpreeSunspotConfig[:facet_display_limit]
+facets_arr.each do |f|
+    %>
     <% unless @searcher.sunspot.facet("#{f}_facet").rows.empty? %>
         <h6><%= t "#{f}_facet" %></h6>
         <ul>
-            <% @searcher.sunspot.facet("#{f}_facet").rows.each do |row| %>
+            <% @searcher.sunspot.facet("#{f}_facet").rows.slice(0..limit).each do |row| %>
                 <li><%= link_to(row.value, params.merge("#{f}_facet" => row.value)) %> (<%= row.count %>)</li>
             <% end %>
         </ul>
