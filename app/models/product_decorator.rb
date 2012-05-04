@@ -1,20 +1,25 @@
 Spree::Product.class_eval do
   searchable do
-    # Boost up the name in the results
-    text :name, :boost => 2.0
-    string :product_name, :stored => true do
-      name.downcase.sub(/^(an?|the)\W+/, '')
+    boolean :is_active, :using => :is_active?
+
+    PRODUCT_FIELDS.each do |field|
+      if field.class == Hash
+        field = { :opts => {} }.merge field
+        send field[:type], field[:name], field[:opts]
+      else
+        send :text, field
+      end
     end
 
-    text :description
-    boolean :is_active, :using => :is_active?
-    float :price
-
+    # manually setup taxons
     integer :taxon_ids, :multiple => true, :references => Spree::Taxon
     integer :taxon, :multiple => true do
       taxons.map(&:id)
     end
-    string :taxon_name, :multiple => true do
+
+    # this is the facet that is used in the taxon display
+    # the name is a bit ugly, but it keeps us DRY by using PRODUCT_SHOW_FACETS
+    string :taxon_name_facet, :multiple => true do
       taxons.map(&:name)
     end
 
@@ -26,7 +31,13 @@ Spree::Product.class_eval do
 
     PRODUCT_PROPERTY_FACETS.each do |prop|
       string "#{prop}_facet", :multiple => true do
-        get_product_property(prop.to_s)
+        property(prop.to_s)
+      end
+    end
+
+    PRODUCT_OTHER_FACETS.each do |method|
+      string "#{method}_facet", :multiple => true do
+        send(method)
       end
     end
 
@@ -53,23 +64,18 @@ Spree::Product.class_eval do
     I18n.t(:price_and_above, :price => max)
   end
 
-  def get_product_property(prop)
-    #p = Property.find_by_name(prop)
-    #ProductProperty.find(:product_id => self.id, :property_id => p.id)
-    pp = ProductProperty.first(:joins => :property, :conditions => {:product_id => self.id, :properties => {:name => prop.to_s}})
-    pp.value if pp
-  end
-
   def get_option_values(option_name)
+    # in the next 1.1.x release this should be replaced with the option value accessors
+
     sql = <<-eos
       SELECT DISTINCT ov.id, ov.presentation
-      FROM option_values AS ov
-      LEFT JOIN option_types AS ot ON (ov.option_type_id = ot.id)
-      LEFT JOIN option_values_variants AS ovv ON (ovv.option_value_id = ov.id)
-      LEFT JOIN variants AS v ON (ovv.variant_id = v.id)
-      LEFT JOIN products AS p ON (v.product_id = p.id)
+      FROM spree_option_values AS ov
+      LEFT JOIN spree_option_types AS ot ON (ov.option_type_id = ot.id)
+      LEFT JOIN spree_option_values_variants AS ovv ON (ovv.option_value_id = ov.id)
+      LEFT JOIN spree_variants AS v ON (ovv.variant_id = v.id)
+      LEFT JOIN spree_products AS p ON (v.product_id = p.id)
       WHERE (ot.name = '#{option_name}' AND p.id = #{self.id});
     eos
-    OptionValue.find_by_sql(sql)
+    Spree::OptionValue.find_by_sql(sql)
   end
 end

@@ -1,20 +1,20 @@
-<%
-    facets_arr = PRODUCT_OPTION_FACETS
-    facets_arr += PRODUCT_PROPERTY_FACETS
-%>
+<% facets_arr = PRODUCT_OPTION_FACETS + PRODUCT_PROPERTY_FACETS + PRODUCT_OTHER_FACETS + PRODUCT_SHOW_FACETS %>
 <% facets_arr.each do |f| %>
-    <% unless @searcher.products.facet("#{f}_facet").rows.empty? %>
-        <h4><%= t "#{f}_facet" %></h4>
+    <% unless @searcher.sunspot.facet("#{f}_facet").rows.empty? %>
+        <h6><%= t "#{f}_facet" %></h6>
         <ul>
-            <% @searcher.products.facet("#{f}_facet").rows.each do |row| %>
+            <% @searcher.sunspot.facet("#{f}_facet").rows.each do |row| %>
                 <li><%= link_to(row.value, params.merge("#{f}_facet" => row.value)) %> (<%= row.count %>)</li>
             <% end %>
         </ul>
     <% end %>
 <% end %>
-<h4><%= t "price_range" %></h4>
+
+<% unless @searcher.sunspot.facet(:price).rows.empty? %>
+<h6><%= t "price_range" %></h6>
 <ul>
-    <% @searcher.products.facet(:price).rows.each do |row| %>
-        <li><%= link_to(t(row.value), params.merge("price" => row.value)) %> (<%= row.count %>)</li>
+    <% @searcher.sunspot.facet(:price).rows.each do |row| %>
+        <li><%= link_to(t(row.value) + " (#{row.count})", params.merge("price" => row.value)) %></li>
     <% end %>
 </ul>
+<% end %>
