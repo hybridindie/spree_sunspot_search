@@ -1,4 +1,4 @@
-Product.class_eval do
+Spree::Product.class_eval do
   searchable do
     # Boost up the name in the results
     text :name, :boost => 2.0
@@ -10,7 +10,7 @@ Product.class_eval do
     boolean :is_active, :using => :is_active?
     float :price
 
-    integer :taxon_ids, :multiple => true, :references => Taxon
+    integer :taxon_ids, :multiple => true, :references => Spree::Taxon
     integer :taxon, :multiple => true do
       taxons.map(&:id)
     end
