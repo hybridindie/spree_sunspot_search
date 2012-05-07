@@ -7,7 +7,7 @@ module Spree
           #     - we are sending the block value as a method
           #     - Spree::Search::Base is using method_missing() to return the param values
 
-          (PRODUCT_OPTION_FACETS + PRODUCT_PROPERTY_FACETS + PRODUCT_OTHER_FACETS + [:taxon_name]).each do |name|
+          (PRODUCT_OPTION_FACETS + PRODUCT_PROPERTY_FACETS + PRODUCT_OTHER_FACETS + PRODUCT_SHOW_FACETS).each do |name|
             with("#{name}_facet", send(name)) if send(name)
             facet("#{name}_facet")
           end
@@ -39,6 +39,9 @@ module Spree
 
         @properties[:sort] = params[:sort] || :score
         @properties[:order] = params[:order] || :desc
+
+        # when taxon navigation is in place, Spree::TaxonsController passes :taxon in params
+        @properties[:taxon_name_facet] = params[:taxon] unless params[:taxon].blank?
         
         (PRODUCT_OPTION_FACETS + PRODUCT_PROPERTY_FACETS + PRODUCT_OTHER_FACETS + PRODUCT_SHOW_FACETS).each do |name|
           @properties[name] = params["#{name}_facet"]
