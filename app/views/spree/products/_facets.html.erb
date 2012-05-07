@@ -1,6 +1,6 @@
 <%
 facets_arr = PRODUCT_OPTION_FACETS + PRODUCT_PROPERTY_FACETS + PRODUCT_OTHER_FACETS + PRODUCT_SHOW_FACETS
-limit = Spree::Search::SpreeSunspotConfig[:facet_display_limit]
+limit = Spree::SunspotSearch::Config[:facet_display_limit]
 facets_arr.each do |f|
     %>
     <% unless @searcher.sunspot.facet("#{f}_facet").rows.empty? %>
