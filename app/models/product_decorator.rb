@@ -2,12 +2,14 @@ Spree::Product.class_eval do
   searchable do
     boolean :is_active, :using => :is_active?
 
-    PRODUCT_FIELDS.each do |field|
+    conf = Spree::Search::SpreeSunspot.configuration
+
+    conf.fields.each do |field|
       if field.class == Hash
         field = { :opts => {} }.merge field
         send field[:type], field[:name], field[:opts]
       else
-        send :text, field
+        text(field)
       end
     end
 
@@ -23,19 +25,19 @@ Spree::Product.class_eval do
       taxons.map(&:name)
     end
 
-    PRODUCT_OPTION_FACETS.each do |option|
+    conf.option_facets.each do |option|
       string "#{option}_facet", :multiple => true do
         get_option_values(option.to_s).map(&:presentation)
       end
     end
 
-    PRODUCT_PROPERTY_FACETS.each do |prop|
+    conf.property_facets.each do |prop|
       string "#{prop}_facet", :multiple => true do
         property(prop.to_s)
       end
     end
 
-    PRODUCT_OTHER_FACETS.each do |method|
+    conf.other_facets.each do |method|
       string "#{method}_facet", :multiple => true do
         send(method)
       end
@@ -57,7 +59,7 @@ Spree::Product.class_eval do
 
   def price_range
     max = 0
-    PRODUCT_PRICE_RANGES.each do |range, name|
+    Spree::Search::SpreeSunspot.configuration.price_ranges.each do |range, name|
       return name if range.include?(price)
       max = range.max if range.max > max
     end

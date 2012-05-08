@@ -1,7 +1,7 @@
 module SpreeSunspotSearch
   module Generators
     class InstallGenerator < Rails::Generators::Base
-      source_root File.expand_path('../../../../../config/initializers/', __FILE__)
+      source_root File.expand_path('../../../templates/', __FILE__)
 
       def add_javascripts
         append_file "app/assets/javascripts/store/all.js", "//= require store/solr_sort_by\n"
