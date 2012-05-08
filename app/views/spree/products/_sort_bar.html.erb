@@ -5,6 +5,7 @@ unless params.keys.detect { |k| k != 'controller' and k != 'action' }.nil?
 	options = Spree::Search::SpreeSunspot.configuration.sort_fields.map do |key, value|
 		# value is sort direction
 		value = [value] if !value.is_a? Array
+		Rails.logger.info "Array Key sort.#{key}_#{value}"
 		value.map { |sort| [t("sort.#{key}_#{sort}"), url_for(request.params.merge({:sort => key, :order => sort}))] }
 	end
 

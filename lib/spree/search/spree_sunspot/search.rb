@@ -4,9 +4,9 @@ module Spree
 
       class Search < defined?(Spree::Search::MultiDomain) ? Spree::Search::MultiDomain : Spree::Core::Search::Base
         def retrieve_products
-          @properties[:sunspot] = Sunspot.search(::Spree::Product) do
-            conf = Spree::Search::SpreeSunspot.configuration
+          conf = Spree::Search::SpreeSunspot.configuration
 
+          @properties[:sunspot] = Sunspot.search(::Spree::Product) do
             # This is a little tricky to understand
             #     - we are sending the block value as a method
             #     - Spree::Search::Base is using method_missing() to return the param values
@@ -25,9 +25,6 @@ module Spree
 
               # TODO add greater than range
             end
-
-            # TODO should check 
-            # with(sort) unless ['price', 'score'].include? sort
 
             order_by sort.to_sym, order.to_sym
             with(:is_active, true)
@@ -51,14 +48,14 @@ module Spree
           # when taxon navigation is in place, Spree::TaxonsController passes :taxon in params
           @properties[:taxon_name_facet] = params[:taxon] unless params[:taxon].blank?
           
-          conf.display_facets.each do |name|
+          Spree::Search::SpreeSunspot.configuration.display_facets.each do |name|
             @properties[name] = params["#{name}_facet"]
           end
 
         end
 
       end
-      
+
     end
   end
 end

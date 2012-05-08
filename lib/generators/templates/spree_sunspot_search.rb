@@ -5,7 +5,7 @@
 #   conf.option_facets = []
 #   conf.property_facets = []
 #   conf.other_facets = []
-#   conf.show_facet = []
+#   conf.show_facets = []
 #   conf.fields = []
-#   conf.sort_field = []
+#   conf.sort_fields = {}
 # end

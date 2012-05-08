@@ -62,4 +62,5 @@ module Spree
   end
 end
 
+# TODO move this to a more appropiate / intention revealing location
 Spree::Search::SpreeSunspot.configure {}
