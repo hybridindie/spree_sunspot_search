@@ -45,13 +45,19 @@ module Spree
           @properties[:sort] = params[:sort] || :score
           @properties[:order] = params[:order] || :desc
 
-          # when taxon navigation is in place, Spree::TaxonsController passes :taxon in params
-          @properties[:taxon_name_facet] = params[:taxon] unless params[:taxon].blank?
+          # TODO taxon facet should use ID instead of name
+          # TODO the taxon facet link shouls use the taxon permalink instead of a query string param
+
+          # when taxon navigation is in place, Spree::TaxonsController passes :taxon
+          # :taxon is the ID of the taxon
+          unless params[:taxon].blank?
+            taxon = Spree::Taxon.find(params[:taxon])
+            @properties[:taxon_name] = taxon.name unless taxon.nil?
+          end
           
           Spree::Search::SpreeSunspot.configuration.display_facets.each do |name|
-            @properties[name] = params["#{name}_facet"]
+            @properties[name] = params["#{name}_facet"] if @properties[name].blank? or !params["#{name}_facet"].blank?
           end
-
         end
 
       end
