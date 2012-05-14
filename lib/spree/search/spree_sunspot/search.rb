@@ -58,6 +58,12 @@ module Spree
           Spree::Search::SpreeSunspot.configuration.display_facets.each do |name|
             @properties[name] = params["#{name}_facet"] if @properties[name].blank? or !params["#{name}_facet"].blank?
           end
+
+          # this is to allow easily breadcrumb display
+          # TODO in the future this shoudl be cleaned up when taxon's are handled better
+          if params[:taxon].blank? and not params['taxon_name_facet'].blank?
+            @properties[:taxon] = Spree::Taxon.find_by_name(params['taxon_name_facet'])
+          end
         end
 
       end
