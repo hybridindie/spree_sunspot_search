@@ -26,6 +26,9 @@ module Spree
               # TODO add greater than range
             end
 
+            facet(:taxon_ids)
+            with(:taxon_ids, send(:taxon).id) if send(:taxon)
+
             order_by sort.to_sym, order.to_sym
             with(:is_active, true)
             keywords(query)
@@ -38,31 +41,18 @@ module Spree
         protected
 
         def prepare(params)
+          # super copies over :taxon and other variables into properties
+          # as well as handles pagination
           super
+
           @properties[:query] = params[:keywords]
           @properties[:price] = params[:price]
 
           @properties[:sort] = params[:sort] || :score
           @properties[:order] = params[:order] || :desc
 
-          # TODO taxon facet should use ID instead of name
-          # TODO the taxon facet link shouls use the taxon permalink instead of a query string param
-
-          # when taxon navigation is in place, Spree::TaxonsController passes :taxon
-          # :taxon is the ID of the taxon
-          unless params[:taxon].blank?
-            taxon = Spree::Taxon.find(params[:taxon])
-            @properties[:taxon_name] = taxon.name unless taxon.nil?
-          end
-          
           Spree::Search::SpreeSunspot.configuration.display_facets.each do |name|
             @properties[name] = params["#{name}_facet"] if @properties[name].blank? or !params["#{name}_facet"].blank?
-          end
-
-          # this is to allow easily breadcrumb display
-          # TODO in the future this shoudl be cleaned up when taxon's are handled better
-          if params[:taxon].blank? and not params['taxon_name_facet'].blank?
-            @properties[:taxon] = Spree::Taxon.find_by_name(params['taxon_name_facet'])
           end
         end
 

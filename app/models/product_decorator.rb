@@ -13,16 +13,11 @@ Spree::Product.class_eval do
       end
     end
 
-    # manually setup taxons
-    integer :taxon_ids, :multiple => true, :references => Spree::Taxon
-    integer :taxon, :multiple => true do
-      taxons.map(&:id)
-    end
-
-    # this is the facet that is used in the taxon display
-    # the name is a bit ugly, but it keeps us DRY by using PRODUCT_SHOW_FACETS
-    string :taxon_name_facet, :multiple => true do
-      taxons.map(&:name)
+    # pull the product's taxon, and all its ancestors: this allows us to intersect the display with the current taxon's
+    # children and allow the user to intuitively 'dig down' into the product heirarchy
+    # root taxon is excluded: doesn't really allow for intuitive navigation
+    integer :taxon_ids, :multiple => true, :references => Spree::Taxon do
+      taxons.map { |t| t.self_and_ancestors.select { |tx| !tx.root? }.map(&:id) }.flatten(1).uniq
     end
 
     conf.option_facets.each do |option|
