@@ -1,0 +1,42 @@
+<%
+facets_arr = Spree::Search::SpreeSunspot.configuration.display_facets
+limit = Spree::SunspotSearch::Config[:facet_display_limit]
+
+if @taxon
+    display_list = @taxon.leaf? ? [@taxon.id] : @taxon.children.map(&:id)
+else
+    display_list = @searcher.sunspot.facet(:taxon_ids).rows.slice(0..limit).map { |r| r.instance.id }
+end
+
+taxon_rows = @searcher.sunspot.facet(:taxon_ids).rows.select { |t| display_list.include? t.instance.id }.slice(0..limit)
+
+if taxon_rows.length > 1 %>
+<h6><%= t :taxon_facet %></h6>
+<ul>
+    <% taxon_rows.each do |taxon| %>
+    <%= content_tag(:li, link_to_facet(:taxon_id, taxon)) %>
+    <% end %>
+</ul>
+<% end %>
+
+<%# handle the rest of the facets %>
+<% facets_arr.each do |f| %>
+    <% unless @searcher.sunspot.facet("#{f}_facet").rows.empty? %>
+        <h6><%= t "#{f}_facet" %></h6>
+        <ul>
+            <% @searcher.sunspot.facet("#{f}_facet").rows.slice(0..limit).each do |row| %>
+            <%= content_tag(:li, link_to_facet(f, row)) %>
+            <% end %>
+        </ul>
+    <% end %>
+<% end %>
+
+
+<% unless @searcher.sunspot.facet(:price).rows.empty? %>
+<h6><%= t "price_range" %></h6>
+<ul>
+    <% @searcher.sunspot.facet(:price).rows.each do |row| %>
+        <li><%= link_to(t(row.value) + " (#{row.count})", params.merge("price" => row.value)) %></li>
+    <% end %>
+</ul>
+<% end %>

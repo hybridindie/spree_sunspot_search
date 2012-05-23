@@ -1,7 +1,9 @@
 SpreeSunspotSearch
 ==================
 
-Adds Solr search to Spree using [Sunspot]:https://github.com/sunspot/sunspot . This is a moving targer and is very beta and should be treated as such. This is compatable with the current 0.70 release of Spree only due to gem requirements.
+Adds Solr search to Spree using [Sunspot](https://github.com/sunspot/sunspot). This is a moving targer and is very beta and should be treated as such.
+
+This is compatible with Spree 1.1. Untested on 1.0, but will probably work without too much modification
 
 
 Install
@@ -15,26 +17,25 @@ Add spree_sunspot_search to your Gemfile and run bundler.
 
 add the following to the Gemfile if you are not using another solr install locally for testing and development. The rake tasks for starting and stop this for development are included automatically for your use.
 
-`group :test, :development do`
-`  gem 'sunspot_solr'`
-`end`
+	group :test, :development do
+		gem 'sunspot_solr'
+	end
 
-bundle install
 
 Install the solr.yml file from Sunspot.
 
 `rails g sunspot_rails:install`
 
-Copy the Initializer
+Copy the initializer and add `solr_sort_by` to `all.js`
 
-`rake spree_sunspot:install`
+`rails g spree_sunspot:install`
 
 Running
 =======
 
 Start up Solr (bundled with Sunspot's install)
 
-`rake sunsport:solr:run`
+`rake sunspot:solr:run`
 
 Build the index for the first time
 
@@ -55,7 +56,9 @@ same goes for product options
 
 and price ranges
 
-`PRODUCT_PRICE_RANGES = ["0-25", "25-50", "50-100", "100-150"]
+`PRODUCT_PRICE_RANGES = ["0-25", "25-50", "50-100", "100-150"]`
+
+look at the copied initializer for more options. You can add sorting options, specify custom facets, etc.
 
 Testing
 =======
@@ -65,10 +68,14 @@ Pending
 TODOs
 =====
 
-*Add an automatic MAX value for price facets (e.g. Above <max_said_value>)
-*Sorting by facet criteria and Solr analytics (Best result, Popular, etc.)
-*Open the Sunspot DSL to utilise all the additional data and analytics available through Solr
-*Get the Taxon browsing (e.g. Categories) to utilise the Solr data for speed boosts
+* Add an automatic MAX value for price facets (e.g. Above <max_said_value>)
+* Sorting by facet criteria and Solr analytics (Best result, Popular, etc.)
+* Open the Sunspot DSL to utilise all the additional data and analytics available through Solr
+* Get the Taxon browsing (e.g. Categories) to utilise the Solr data for speed boosts
 
+Authors
+=======
+* @jbrien
+* @iloveitaly
 
 Copyright (c) 2011 John Brien Dilts, released under the New BSD License

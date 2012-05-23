@@ -1,32 +1,40 @@
-Product.class_eval do
+Spree::Product.class_eval do
   searchable do
-    # Boost up the name in the results
-    text :name, :boost => 2.0
-    string :product_name, :stored => true do
-      name.downcase.sub(/^(an?|the)\W+/, '')
-    end
-
-    text :description
     boolean :is_active, :using => :is_active?
-    float :price
 
-    integer :taxon_ids, :multiple => true, :references => Taxon
-    integer :taxon, :multiple => true do
-      taxons.map(&:id)
-    end
-    string :taxon_name, :multiple => true do
-      taxons.map(&:name)
+    conf = Spree::Search::SpreeSunspot.configuration
+
+    conf.fields.each do |field|
+      if field.class == Hash
+        field = { :opts => {} }.merge field
+        send field[:type], field[:name], field[:opts]
+      else
+        text(field)
+      end
     end
 
-    PRODUCT_OPTION_FACETS.each do |option|
+    # pull the product's taxon, and all its ancestors: this allows us to intersect the display with the current taxon's
+    # children and allow the user to intuitively 'dig down' into the product heirarchy
+    # root taxon is excluded: doesn't really allow for intuitive navigation
+    integer :taxon_ids, :multiple => true, :references => Spree::Taxon do
+      taxons.map { |t| t.self_and_ancestors.select { |tx| !tx.root? }.map(&:id) }.flatten(1).uniq
+    end
+
+    conf.option_facets.each do |option|
       string "#{option}_facet", :multiple => true do
         get_option_values(option.to_s).map(&:presentation)
       end
     end
 
-    PRODUCT_PROPERTY_FACETS.each do |prop|
+    conf.property_facets.each do |prop|
       string "#{prop}_facet", :multiple => true do
-        get_product_property(prop.to_s)
+        property(prop.to_s)
+      end
+    end
+
+    conf.other_facets.each do |method|
+      string "#{method}_facet", :multiple => true do
+        send(method)
       end
     end
 
@@ -46,30 +54,25 @@ Product.class_eval do
 
   def price_range
     max = 0
-    PRODUCT_PRICE_RANGES.each do |range, name|
+    Spree::Search::SpreeSunspot.configuration.price_ranges.each do |range, name|
       return name if range.include?(price)
       max = range.max if range.max > max
     end
     I18n.t(:price_and_above, :price => max)
   end
 
-  def get_product_property(prop)
-    #p = Property.find_by_name(prop)
-    #ProductProperty.find(:product_id => self.id, :property_id => p.id)
-    pp = ProductProperty.first(:joins => :property, :conditions => {:product_id => self.id, :properties => {:name => prop.to_s}})
-    pp.value if pp
-  end
-
   def get_option_values(option_name)
+    # in the next 1.1.x release this should be replaced with the option value accessors
+
     sql = <<-eos
       SELECT DISTINCT ov.id, ov.presentation
-      FROM option_values AS ov
-      LEFT JOIN option_types AS ot ON (ov.option_type_id = ot.id)
-      LEFT JOIN option_values_variants AS ovv ON (ovv.option_value_id = ov.id)
-      LEFT JOIN variants AS v ON (ovv.variant_id = v.id)
-      LEFT JOIN products AS p ON (v.product_id = p.id)
+      FROM spree_option_values AS ov
+      LEFT JOIN spree_option_types AS ot ON (ov.option_type_id = ot.id)
+      LEFT JOIN spree_option_values_variants AS ovv ON (ovv.option_value_id = ov.id)
+      LEFT JOIN spree_variants AS v ON (ovv.variant_id = v.id)
+      LEFT JOIN spree_products AS p ON (v.product_id = p.id)
       WHERE (ot.name = '#{option_name}' AND p.id = #{self.id});
     eos
-    OptionValue.find_by_sql(sql)
+    Spree::OptionValue.find_by_sql(sql)
   end
 end

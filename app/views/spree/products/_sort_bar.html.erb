@@ -1,0 +1,18 @@
+<%
+if not params.keys.detect { |k| k != 'controller' and k != 'action' }.nil? and params[:controller] != 'spree/taxons'
+	# hate to throw this logic here (messy)
+	# I think it would be worse to create a one-time-use helper method
+	options = Spree::Search::SpreeSunspot.configuration.sort_fields.map do |key, value|
+		# value is sort direction
+		value = [value] if !value.is_a? Array
+		Rails.logger.info "Array Key sort.#{key}_#{value}"
+		value.map { |sort| [t("sort.#{key}_#{sort}"), url_for(request.params.merge({:sort => key, :order => sort}))] }
+	end
+
+	options = options_for_select(options.flatten(1), url_for(request.params.merge({
+		:sort => params[:sort] || :score,
+		:order => params[:order] || :desc
+	})))
+%>
+<div id="product-list-sort"><%= t(:sort_by) %> <%= select_tag("product_sort_by", options) %></div>
+<% end %>
