@@ -6,8 +6,15 @@ Spree::Product.class_eval do
 
     conf.fields.each do |field|
       if field.class == Hash
-        field = { :opts => {} }.merge field
-        send field[:type], field[:name], field[:opts]
+        field = { :opts => {} }.merge(field)
+
+        if field[:opts][:block]
+          block = field[:opts][:block]
+          field[:opts].delete(:block)
+          send field[:type], field[:name], field[:opts], &block
+        else
+          send field[:type], field[:name], field[:opts]
+        end
       else
         text(field)
       end
