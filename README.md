@@ -44,26 +44,13 @@ Build the index for the first time
 Customise the Facets Shown
 --------------------------
 
-Edit the initializer and specify you Product Properties, Product Options, and Price Ranges as an array
-
-supposing you have model manufacturer and gender as addition properties you would add the following to the initializer
-
-`PRODUCT_PROPERTY_FACETS = [:brand, :model, :manufacturer, :gender]`
-
-same goes for product options
-
-`PRODUCT_OPTION_FACETS = [:color, :size]`
-
-and price ranges
-
-`PRODUCT_PRICE_RANGES = ["0-25", "25-50", "50-100", "100-150"]`
-
-look at the copied initializer for more options. You can add sorting options, specify custom facets, etc.
+Edit the initializer and specify you Product Properties, Product Options, and Price Ranges as an array.
+The initializer should provide enough examples to get you started.
 
 Testing
 =======
 
-Pending
+TODO
 
 TODOs
 =====

@@ -6,6 +6,6 @@
 #   conf.property_facets = []
 #   conf.other_facets = []
 #   conf.show_facets = []
-#   conf.fields = [ { :type => :text, :name => :isbn, :opts => { :block => lambda { |p| p.property('isbn') } } } ]
+#   conf.fields = [ { :type => :text, :name => :isbn, :opts => { :block => Proc.new { |p| p.property('isbn') } } } ]
 #   conf.sort_fields = {}
 # end
