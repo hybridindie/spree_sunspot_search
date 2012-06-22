@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'spree_sunspot_search'
-  s.version     = '1.1.0'
+  s.version     = '1.1.1'
   s.summary     = 'Add Solr search to Spree via the Sunspot gem'
   s.description = 'Sunspot and Spree have a wonderful baby'
   s.required_ruby_version = '>= 1.8.7'

@@ -45,6 +45,10 @@ module Spree
           # as well as handles pagination
           super
 
+          # TODO should do some parameter cleaning here: only allow valid search params to be passed through
+          # the faceting partial is kind of 'dumb' about the params object: doesn't clean it out and just
+          # dumps all the params into the query string
+
           @properties[:query] = params[:keywords]
           @properties[:price] = params[:price]
 
