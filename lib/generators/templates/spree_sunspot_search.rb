@@ -1,4 +1,5 @@
 # Take a look at the Spree::Search::SpreeSunspot::Configuration class for details
+# it is important that all 'block fields' return an empty string and not nil
 
 # Spree::Search::SpreeSunspot.configure do |conf|
 #   conf.price_ranges = []

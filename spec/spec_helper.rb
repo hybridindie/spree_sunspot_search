@@ -28,3 +28,5 @@ RSpec.configure do |config|
 end
 
 @configuration ||= AppConfiguration.find_or_create_by_name("Default configuration")
+
+# TODO need to test integration with product search
