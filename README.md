@@ -3,7 +3,7 @@ SpreeSunspotSearch
 
 Adds Solr search to Spree using [Sunspot](https://github.com/sunspot/sunspot). This is a moving targer and is very beta and should be treated as such.
 
-This is compatible with Spree 1.1. Untested on 1.0, but will probably work without too much modification
+This is compatible with Spree 1.2. I haven't tested it below that.
 
 
 Install
@@ -28,7 +28,7 @@ Install the solr.yml file from Sunspot.
 
 Copy the initializer and add `solr_sort_by` to `all.js`
 
-`rails g spree_sunspot:install`
+`rails g spree_sunspot_search:install`
 
 Running
 =======
