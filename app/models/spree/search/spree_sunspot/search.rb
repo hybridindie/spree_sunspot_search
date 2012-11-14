@@ -6,12 +6,14 @@ module Spree
         def retrieve_products
           conf = Spree::Search::SpreeSunspot.configuration
 
-          @properties[:sunspot] = Sunspot.search(::Spree::Product) do
+          # send(name) looks in @properties
+
+          @properties[:sunspot] = Sunspot.search(Spree::Product) do
             # This is a little tricky to understand
             #     - we are sending the block value as a method
             #     - Spree::Search::Base is using method_missing() to return the param values
             conf.display_facets.each do |name|
-              with("#{name}_facet", send(name)) if send(name)
+              with("#{name}_facet", send(name)) if send(name).present?
               facet("#{name}_facet")
             end
 
@@ -45,6 +47,10 @@ module Spree
           # as well as handles pagination
           super
 
+          # TODO should do some parameter cleaning here: only allow valid search params to be passed through
+          # the faceting partial is kind of 'dumb' about the params object: doesn't clean it out and just
+          # dumps all the params into the query string
+
           @properties[:query] = params[:keywords]
           @properties[:price] = params[:price]
 
@@ -52,7 +58,7 @@ module Spree
           @properties[:order] = params[:order] || :desc
 
           Spree::Search::SpreeSunspot.configuration.display_facets.each do |name|
-            @properties[name] = params["#{name}_facet"] if @properties[name].blank? or !params["#{name}_facet"].blank?
+            @properties[name] ||= params["#{name}_facet"]
           end
         end
 

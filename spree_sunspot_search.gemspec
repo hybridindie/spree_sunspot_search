@@ -1,13 +1,13 @@
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'spree_sunspot_search'
-  s.version     = '1.1.0'
+  s.version     = '1.1.2'
   s.summary     = 'Add Solr search to Spree via the Sunspot gem'
   s.description = 'Sunspot and Spree have a wonderful baby'
   s.required_ruby_version = '>= 1.8.7'
 
-  s.author            = 'John Brien Dilts'
-  s.email             = 'jdilts@railsdog.com'
+  s.author            = ['John Brien Dilts', 'Michael Bianco']
+  s.email             = ['jdilts@railsdog.com', 'info@cliffsidedev.com']
   s.homepage          = 'http://www.railsdog.com'
 
   s.files         = `git ls-files`.split("\n")
