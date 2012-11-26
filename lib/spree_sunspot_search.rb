@@ -1,6 +1,6 @@
 require 'spree_core'
 require 'sunspot_rails'
-require 'spree/search/spree_sunspot/configuration'
+require 'spree/search/sunspot/configuration'
 
 module Spree::SunspotSearch; end
 
@@ -11,8 +11,8 @@ module SpreeSunspotSearch
     config.autoload_paths += %W(#{config.root}/lib)
 
     initializer "spree.sunspot_search.preferences", :after => "spree.environment" do |app|
-      Spree::Config.searcher_class = Spree::Search::SpreeSunspot::Search
-      Spree::SunspotSearch::Config = Spree::SunspotSearchConfiguration.new
+      Spree::Config.searcher_class = Spree::Search::Sunspot
+      Spree::Search::Sunspot::Config = Spree::Search::Sunspot::Configuration.new
     end
 
     def self.activate

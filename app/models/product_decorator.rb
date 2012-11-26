@@ -2,7 +2,7 @@ Spree::Product.class_eval do
   searchable do
     boolean :is_active, :using => :is_active?
 
-    conf = Spree::Search::SpreeSunspot.configuration
+    conf = Spree::Search::Sunspot.configuration
 
     conf.fields.each do |field|
       if field.class == Hash
@@ -61,7 +61,7 @@ Spree::Product.class_eval do
 
   def price_range
     max = 0
-    Spree::Search::SpreeSunspot.configuration.price_ranges.each do |range, name|
+    Spree::Search::Sunspot.configuration.price_ranges.each do |range, name|
       return name if range.include?(price)
       max = range.max if range.max > max
     end

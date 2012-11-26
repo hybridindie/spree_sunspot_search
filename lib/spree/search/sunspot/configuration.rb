@@ -1,6 +1,6 @@
 module Spree
   module Search
-    module SpreeSunspot
+    module Sunspot
       class Configuration
         attr_accessor :price_ranges,
                       :option_facets,
@@ -55,7 +55,7 @@ module Spree
       end
 
       def self.configure
-        self.configuration ||= Spree::Search::SpreeSunspot::Configuration.new
+        self.configuration ||= Spree::Search::Sunspot::Configuration.new
         yield configuration
       end
     end
@@ -63,4 +63,4 @@ module Spree
 end
 
 # TODO move this to a more appropiate / intention revealing location
-Spree::Search::SpreeSunspot.configure {}
+Spree::Search::Sunspot.configure {}
