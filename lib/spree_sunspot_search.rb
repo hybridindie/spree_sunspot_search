@@ -1,26 +1,13 @@
 require 'spree_core'
+require 'spree/core/search/base'
 require 'sunspot_rails'
-require 'spree/search/sunspot/configuration'
 
-module Spree::SunspotSearch; end
 
-module SpreeSunspotSearch
-  class Engine < Rails::Engine
-    engine_name 'spree_sunspot_search'
-
-    config.autoload_paths += %W(#{config.root}/lib)
-
-    initializer "spree.sunspot_search.preferences", :after => "spree.environment" do |app|
-      Spree::Config.searcher_class = Spree::Search::Sunspot
-      Spree::Search::Sunspot::Config = Spree::Search::Sunspot::Configuration.new
-    end
-
-    def self.activate
-      Dir.glob(File.join(File.dirname(__FILE__), "../app/**/*_decorator*.rb")) do |c|
-        Rails.configuration.cache_classes ? require(c) : load(c)
-      end
-    end
-
-    config.to_prepare &method(:activate).to_proc
+module Spree
+  module Search
   end
 end
+
+require 'spree/search/engine'
+require 'spree/search/sunspot'
+require 'spree/search/configuration'
