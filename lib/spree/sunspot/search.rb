@@ -6,12 +6,13 @@ require 'spree/sunspot/filter/query'
 
 module SpreeSunspot
   class Search < Spree::Core::Search::Base
-    class << self
-      attr_accessor :solr_search, :hits
-    end
 
     def query
       @filter_query
+    end
+
+    def solr_search
+      @solr_search
     end
 
     def retrieve_products(*args)
@@ -73,6 +74,9 @@ module SpreeSunspot
         q.keywords(query) unless query.blank?
         # There is no option to say don't paginate.
         q.paginate(:page => 1, :per_page => 1000000)
+        Spree::Sunspot::Setup.filters.filters.each do |filter|
+          q.facet(filter.search_param)
+        end
       end
 
       unless @properties[:filters].blank?
@@ -93,7 +97,7 @@ module SpreeSunspot
 
     def prepare(params)
       super
-      @properties[:filters] = params[:filter] || params['filter'] || []
+      @properties[:filters] = params[:s] || params['s'] || []
       @properties[:total_similar_products] = params[:total_similar_products].to_i > 0 ? params[:total_similar_products].to_i : Spree::Config[:total_similar_products]
     end
   end

@@ -10,7 +10,6 @@ module Spree
 
         def initialize(source, pcondition)
           @source = source
-
           pconditions = pcondition.split(SPLIT_CHAR)
           this = self
           @conditions = pconditions.map{|p| Spree::Sunspot::Filter::Condition.new(this, p)}
@@ -22,12 +21,14 @@ module Spree
               query.any_of do |query|
                 @conditions.each do |condition|
                   condition.build_search_query(query)
+
                 end
               end
             else
               conditions[0].build_search_query(query)
             end
           end
+
           search
         end
 

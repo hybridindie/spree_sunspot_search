@@ -11,8 +11,7 @@ module Spree
         def filter_support(options = {})
           additional_params = options[:additional_params_method]
           class_eval <<-EOV
-            include Spree::Sunspot::FilterSupport::InstanceMethods
-            helper_method :render_filter
+        include Spree::Sunspot::FilterSupport::InstanceMethods
           EOV
         end
       end
@@ -31,7 +30,7 @@ module Spree
         end
 
         def search_for_products(scope=nil)
-          if (params[:filter].nil? or params[:filter].empty?) and !params[:source_url].nil?
+          if (params[:s].nil? or params[:s].empty?) and !params[:source_url].nil?
             redirect_to params[:source_url]
             return false
           end
@@ -53,10 +52,10 @@ module Spree
           object = instance_variable_get('@'+controller_name.singularize)
           if object
             case controller_name
-            when "products"
-              hash_for_product_path(object)
-            when "taxons"
-              hash_for_taxon_short_path(object)
+              when "products"
+                hash_for_product_path(object)
+              when "taxons"
+                hash_for_taxon_short_path(object)
             end
           else
             {}
