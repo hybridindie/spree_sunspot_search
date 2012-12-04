@@ -1,6 +1,7 @@
+# Sample localization file for English. Add more files in this directory for other locales.
+# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
+
 en:
-  sort_by: "Sort By:"
-  sort:
-    price_desc: "Price Desc"
-    price_asc: "Price Asc"
-    score_desc: "Relevance"
+  empty_search_results: "No products found"
+  clear_all: "Clear All"
+  search: "Search"

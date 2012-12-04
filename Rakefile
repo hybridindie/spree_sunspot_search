@@ -1,75 +1,30 @@
-require 'rubygems'
-require 'rake'
-require 'rake/testtask'
-require 'rake/packagetask'
-require 'rake/gempackagetask'
-
-gemfile = File.expand_path('../spec/test_app/Gemfile', __FILE__)
-if File.exists?(gemfile) && (%w(spec cucumber).include?(ARGV.first.to_s) || ARGV.size == 0)
-  require 'bundler'
-  ENV['BUNDLE_GEMFILE'] = gemfile
-  Bundler.setup
-
-  require 'rspec'
-  require 'rspec/core/rake_task'
-  RSpec::Core::RakeTask.new
-
-  require 'cucumber/rake/task'
-  Cucumber::Rake::Task.new do |t|
-    t.cucumber_opts = %w{--format progress}
-  end
+#!/usr/bin/env rake
+begin
+  require 'bundler/setup'
+rescue LoadError
+  puts 'You must `gem install bundler` and `bundle install` to run rake tasks'
+end
+begin
+  require 'rdoc/task'
+rescue LoadError
+  require 'rdoc/rdoc'
+  require 'rake/rdoctask'
+  RDoc::Task = Rake::RDocTask
 end
 
-desc "Default Task"
-task :default => [:spec, :cucumber ]
+Bundler::GemHelper.install_tasks
 
-spec = eval(File.read('spree_sunspot_search.gemspec'))
+require 'rspec/core/rake_task'
+require 'spree/core/testing_support/common_rake'
 
-Rake::GemPackageTask.new(spec) do |p|
-  p.gem_spec = spec
-end
+RSpec::Core::RakeTask.new
 
-desc "Release to gemcutter"
-task :release => :package do
-  require 'rake/gemcutter'
-  Rake::Gemcutter::Tasks.new(spec).define
-  Rake::Task['gem:push'].invoke
-end
+task :default => [:spec]
 
-desc "Default Task"
-task :default => [ :spec ]
-
-desc "Regenerates a rails 3 app for testing"
 task :test_app do
-  require '../spree/lib/generators/spree/test_app_generator'
-  class SpreeSunspotSearchTestAppGenerator < Spree::Generators::TestAppGenerator
-
-    def install_gems
-      inside "test_app" do
-        run 'bundle exec rake spree_core:install'
-        run 'bundle exec rake spree_sunspot_search:install'
-      end
-    end
-
-    def migrate_db
-      run_migrations
-    end
-
-    protected
-    def full_path_for_local_gems
-      <<-gems
-gem 'spree_core', :path => \'#{File.join(File.dirname(__FILE__), "../spree/", "core")}\'
-gem 'spree_sunspot_search', :path => \'#{File.dirname(__FILE__)}\'
-      gems
-    end
-
-  end
-  SpreeSunspotSearchTestAppGenerator.start
-end
-
-namespace :test_app do
-  desc 'Rebuild test and cucumber databases'
-  task :rebuild_dbs do
-    system("cd spec/test_app && bundle exec rake db:drop db:migrate RAILS_ENV=test && rake db:drop db:migrate RAILS_ENV=cucumber")
+  %w( spree_sunspot ).each do |engine|
+    ENV['LIB_NAME'] = File.join(engine)
+    ENV['DUMMY_PATH'] = File.expand_path("../../#{engine}/spec/dummy", __FILE__)
+    Rake::Task['common:test_app'].execute
   end
 end
