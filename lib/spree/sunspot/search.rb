@@ -62,7 +62,7 @@ module SpreeSunspot
     def get_base_scope
       base_scope = Spree::Product.active
       base_scope = base_scope.in_taxon(taxon) unless taxon.blank?
-      base_scope = get_products_conditions_for(base_scope, keywords)# unless keywords.blank?
+      base_scope = get_products_conditions_for(base_scope, keywords)
       base_scope = base_scope.on_hand unless Spree::Config[:show_zero_stock_products]
 
       base_scope = add_search_scopes(base_scope)
@@ -71,7 +71,7 @@ module SpreeSunspot
 
     def get_products_conditions_for(base_scope, query)
       @solr_search = Sunspot.new_search(Spree::Product) do |q|
-        q.keywords(query) #unless query.blank?
+        q.keywords(query)
 
         q.paginate(:page => 1, :per_page => Spree::Config[:products_per_page])
 
