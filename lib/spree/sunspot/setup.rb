@@ -7,7 +7,7 @@ module Spree
     class Setup
       include Singleton
       IGNORE_MAX = 1000000000
-      @@filters = Spree::Sunspot::Filters.new
+      @@filters = Filters.new
   
       @@configuration = nil
       def self.configure(&blk)

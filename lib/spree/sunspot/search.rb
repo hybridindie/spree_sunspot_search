@@ -62,7 +62,7 @@ module SpreeSunspot
     def get_base_scope
       base_scope = Spree::Product.active
       base_scope = base_scope.in_taxon(taxon) unless taxon.blank?
-      base_scope = get_products_conditions_for(base_scope, keywords) unless keywords.blank?
+      base_scope = get_products_conditions_for(base_scope, keywords)# unless keywords.blank?
       base_scope = base_scope.on_hand unless Spree::Config[:show_zero_stock_products]
 
       base_scope = add_search_scopes(base_scope)
@@ -71,18 +71,29 @@ module SpreeSunspot
 
     def get_products_conditions_for(base_scope, query)
       @solr_search = Sunspot.new_search(Spree::Product) do |q|
-        q.keywords(query) unless query.blank?
-        # There is no option to say don't paginate.
-        q.paginate(:page => 1, :per_page => 1000000)
+        q.keywords(query) #unless query.blank?
+
+        q.paginate(:page => 1, :per_page => Spree::Config[:products_per_page])
+
         Spree::Sunspot::Setup.filters.filters.each do |filter|
           q.facet(filter.search_param)
+
+          # TODO: This needs moved out
+          unless @properties[:filters].blank?
+            conditions = Spree::Sunspot::Filter::Query.new(@properties[:filters]).params
+            conditions.each do |condition, value|
+              # TODO: Get Ranges better supported; pieces are in place just need detected and implemented
+              q.with(condition, value)
+            end
+          end
+
         end
       end
 
-      unless @properties[:filters].blank?
-        @filter_query = Spree::Sunspot::Filter::Query.new(@properties[:filters])
-        @solr_search = @filter_query.build_search(@solr_search)
-      end
+      #unless @properties[:filters].blank?
+      #  @filter_query = Spree::Sunspot::Filter::Query.new(@properties[:filters]).params
+      #  @solr_search = Spree::Sunspot::Filter::Param.build_search_query(@solr_search, @filter_query)
+      #end
 
       @solr_search.execute
       if @solr_search.total > 0
