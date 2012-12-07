@@ -35,7 +35,7 @@ module Spree
 
         # facets that have already been created and should be displayed
         # in the suggestions partial
-        self.show_facets = [:taxon_name]
+        self.show_facets = []
 
         self.sort_fields = {
           :score => :desc,
@@ -62,3 +62,4 @@ end
 
 # TODO move this to a more appropriate / intention revealing location
 Spree::Search.configuration {}
+

@@ -2,7 +2,7 @@
 if not params.keys.detect { |k| k != 'controller' and k != 'action' }.nil? and params[:controller] != 'spree/taxons'
 	# hate to throw this logic here (messy)
 	# I think it would be worse to create a one-time-use helper method
-	options = Spree::Search::SpreeSunspot.configuration.sort_fields.map do |key, value|
+	options = Spree::Search.configuration.sort_fields.map do |key, value|
 		# value is sort direction
 		value = [value] if !value.is_a? Array
 		Rails.logger.info "Array Key sort.#{key}_#{value}"
@@ -16,3 +16,4 @@ if not params.keys.detect { |k| k != 'controller' and k != 'action' }.nil? and p
 %>
 <div id="product-list-sort"><%= t(:sort_by) %> <%= select_tag("product_sort_by", options) %></div>
 <% end %>
+
