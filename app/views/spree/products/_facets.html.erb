@@ -1,5 +1,5 @@
 <%
-facets_arr = Spree::Search::SpreeSunspot.configuration.display_facets
+facets_arr = Spree::Search.configuration.display_facets
 limit = Spree::SunspotSearch::Config[:facet_display_limit]
 
 if @taxon
@@ -40,3 +40,4 @@ if taxon_rows.length > 1 %>
     <% end %>
 </ul>
 <% end %>
+
