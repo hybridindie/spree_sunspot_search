@@ -81,9 +81,11 @@ module SpreeSunspot
           # TODO: This needs moved out
           unless @properties[:filters].blank?
             conditions = Spree::Sunspot::Filter::Query.new(@properties[:filters]).params
-            conditions.each do |condition, value|
-              # TODO: Get Ranges better supported; pieces are in place just need detected and implemented
-              q.with(condition, value)
+            q.all_of do
+              conditions.each do |condition, value|
+                # TODO: Get Ranges better supported; pieces are in place just need detected and implemented
+                q.with(condition, value)
+              end
             end
           end
 
