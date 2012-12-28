@@ -66,7 +66,6 @@ module SpreeSunspot
       base_scope = base_scope.on_hand unless Spree::Config[:show_zero_stock_products]
 
       base_scope = add_search_scopes(base_scope)
-      base_scope
     end
 
     def get_products_conditions_for(base_scope, query)
@@ -81,7 +80,7 @@ module SpreeSunspot
           # TODO: This needs moved out
           unless @properties[:filters].blank?
             conditions = Spree::Sunspot::Filter::Query.new(@properties[:filters]).params
-            q.all_of do
+            q.any_of do
               conditions.each do |condition, value|
                 # TODO: Get Ranges better supported; pieces are in place just need detected and implemented
                 q.with(condition, value)
@@ -91,11 +90,6 @@ module SpreeSunspot
 
         end
       end
-
-      #unless @properties[:filters].blank?
-      #  @filter_query = Spree::Sunspot::Filter::Query.new(@properties[:filters]).params
-      #  @solr_search = Spree::Sunspot::Filter::Param.build_search_query(@solr_search, @filter_query)
-      #end
 
       @solr_search.execute
       if @solr_search.total > 0
@@ -111,7 +105,9 @@ module SpreeSunspot
     def prepare(params)
       super
       @properties[:filters] = params[:s] || params['s'] || []
-      @properties[:total_similar_products] = params[:total_similar_products].to_i > 0 ? params[:total_similar_products].to_i : Spree::Config[:total_similar_products]
+      @properties[:total_similar_products] = params[:total_similar_products].to_i > 0 ?
+          params[:total_similar_products].to_i :
+          Spree::Config[:total_similar_products]
     end
   end
 end
