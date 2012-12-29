@@ -72,7 +72,7 @@ module SpreeSunspot
       @solr_search = Sunspot.new_search(Spree::Product) do |q|
         q.keywords(query)
 
-        q.paginate(:page => 1, :per_page => Spree::Config[:products_per_page])
+        q.paginate(:page => @properties[:page] || 1, :per_page => @properties[:per_page] || Spree::Config[:products_per_page])
 
         Spree::Sunspot::Setup.filters.filters.each do |filter|
           q.facet(filter.search_param)
