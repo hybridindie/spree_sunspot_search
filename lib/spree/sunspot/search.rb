@@ -73,23 +73,16 @@ module SpreeSunspot
         q.keywords(query)
 
         Spree::Sunspot::Setup.filters.filters.each do |filter|
-
-          # TODO: This needs moved out
-          unless @properties[:filters].blank?
-            conditions = Spree::Sunspot::Filter::Query.new(@properties[:filters]).params
-            q.any_of do
-              conditions.each do |condition, value|
-                puts("Condition: #{condition}, Value: #{value}")
-                # TODO: Get Ranges better supported; pieces are in place just need detected and implemented
-                q.with(condition, value)
-              end
-            end
-          end
-
           q.facet( filter.search_param )
-
-          q.paginate(:page => @properties[:page] || 1, :per_page => @properties[:per_page] || Spree::Config[:products_per_page])
         end
+
+        q.paginate(:page => @properties[:page] || 1, :per_page => @properties[:per_page] || Spree::Config[:products_per_page])
+
+      end
+
+      unless @properties[:filters].blank?
+        conditions = Spree::Sunspot::Filter::Query.new(@properties[:filters])
+        @solr_search = conditions.build_search(@solr_search)
       end
 
       @solr_search.execute

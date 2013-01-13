@@ -7,10 +7,10 @@ module Spree
         attr_accessor :condition_type
         attr_accessor :source
 
-        SPLIT_CHAR = ','
         GREATER_THAN = 1
-        BETWEEN = 2
-        EQUAL = 3
+        LESS_THAN = 2
+        BETWEEN = 3
+        EQUAL = 4
 
         def multiple?
           value.kindof?(Array)
@@ -18,11 +18,14 @@ module Spree
 
         def initialize(source, pcondition)
           @source = source
-          range = pcondition.split(SPLIT_CHAR)
+          range = pcondition.split(',')
           if range.size > 1
             if range[1] == '*'
               @value = range[0].to_f
               @condition_type = GREATER_THAN
+            elsif range[0] == '*'
+              @value = range[1].to_f
+              @condition_type = LESS_THAN
             else
               @value = Range.new(range[0].to_f, range[1].to_f)
               @condition_type = BETWEEN
@@ -36,9 +39,11 @@ module Spree
         def to_param
           case condition_type
             when GREATER_THAN
-              "#{value.to_i.to_s}#{SPLIT_CHAR}*"
+              "#{value.to_i.to_s},*"
+            when LESS_THAN
+              "*,#{value.to_i.to_s}"
             when BETWEEN
-              "#{value.first.to_i.to_s}#{SPLIT_CHAR}#{value.last.to_i.to_s}"
+              "#{value.first.to_i.to_s},#{value.last.to_i.to_s}"
             when EQUAL
               value.to_s
           end
@@ -47,11 +52,13 @@ module Spree
         def build_search_query(query)
           case condition_type
             when GREATER_THAN
-              query.with(source.search_param).greater_than(value)
+              query.with(source.source).greater_than(value)
+            when LESS_THAN
+              query.with(source.source).less_than(value)
             when BETWEEN
-              query.with(source.search_param).between(value)
+              query.with(source.source).between(value)
             when EQUAL
-              query.with(source.search_param, value)
+              query.with(source.source, value)
           end
           query
         end

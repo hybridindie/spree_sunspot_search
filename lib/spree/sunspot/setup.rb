@@ -6,18 +6,18 @@ module Spree
   module Sunspot
     class Setup
       include Singleton
-      IGNORE_MAX = 1000000000
+      #IGNORE_MAX = 1000000000
       @@filters = Filters.new
-  
+
       @@configuration = nil
       def self.configure(&blk)
         @@configuration = blk
       end
-    
+
       def self.configuration
         @@configuration
       end
-  
+
       def self.filters(&blk)
         yield @@filters if block_given?
         @@filters
