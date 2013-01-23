@@ -40,7 +40,7 @@ module Spree
           else
             @products = @searcher.retrieve_products(scope)
           end
-          return true
+          true
         end
 
         def search_for_similar_products(product, *field_names)

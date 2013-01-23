@@ -5,6 +5,7 @@ module Spree
       class Filter
         include ActionView::Helpers::NumberHelper
         attr_accessor :search_param
+        attr_accessor :search_condition
         attr_accessor :display_name
         attr_accessor :values
         attr_accessor :param_type
@@ -26,6 +27,10 @@ module Spree
           @search_param.to_sym
         end
 
+        def search_condition
+          @search_condition
+        end
+
         def display_param
           display_name.gsub(' ', '').underscore
         end
@@ -36,6 +41,7 @@ module Spree
             values.collect do |range|
               if range.first == 0
                 { :display => "Under #{number_to_currency(range.last, :precision => 0)}", :value => "#{range.first},#{range.last}" }
+              #TODO: needs removed we are no longer using IGNORE_MAX
               elsif range.last == Spree::Sunspot::Setup::IGNORE_MAX
                 { :display => "#{number_to_currency(range.first, :precision => 0)}+", :value => "#{range.first},*" }
               else

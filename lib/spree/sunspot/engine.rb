@@ -28,7 +28,7 @@ module Spree
           filter_support
         end
 
-        app.config.spree.preferences.searcher_class = SpreeSunspot::Search
+        app.config.spree.preferences.searcher_class = Spree::Sunspot::Search
       end
 
     end

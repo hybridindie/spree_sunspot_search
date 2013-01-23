@@ -21,13 +21,13 @@ module Spree
           range = pcondition.split(',')
           if range.size > 1
             if range[1] == '*'
-              @value = range[0].to_f
+              @value = range[0]
               @condition_type = GREATER_THAN
             elsif range[0] == '*'
-              @value = range[1].to_f
+              @value = range[1]
               @condition_type = LESS_THAN
             else
-              @value = Range.new(range[0].to_f, range[1].to_f)
+              @value = Range.new(range[0], range[1])
               @condition_type = BETWEEN
             end
           else

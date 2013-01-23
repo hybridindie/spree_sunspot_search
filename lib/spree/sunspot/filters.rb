@@ -2,22 +2,22 @@ module Spree
   module Sunspot
     class Filters
       attr_accessor :filters
-  
+
       def initialize
         @filters = []
       end
-  
+
       def add(&blk)
         filter = Spree::Sunspot::Filter::Filter.new
         yield filter
         filter.finalize!
-        filters << filter
+        @filters << filter
       end
-  
-      def filter_for(display_name)
-        @filters.select{|f| f.display_name == display_name or f.display_param == display_name }.first
-      end
-  
+
+      #def self.filter_for(name)
+      #  @filters.select{|f| f.display_name == name || f.search_param == name }.first
+      #end
+
       def method_missing(method, *args)
         if @filters.respond_to?(method)
           @filters.send(method, *args)
