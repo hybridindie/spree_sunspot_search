@@ -33,8 +33,10 @@ module Spree
         def build_search_query(search)
           search.build do |query|
             if @conditions.size > 0
-              @conditions.each do |condition|
-                condition.build_search_query(query)
+              query.any_of do |cond|
+                @conditions.each do |condition|
+                  condition.build_search_query(cond)
+                end
               end
             else
 
