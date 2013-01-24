@@ -1,4 +1,5 @@
-Spree::Product.class_eval do
+module Spree
+  Product.class_eval do
   def get_option_values(option_name)
     sql = <<-eos
       SELECT DISTINCT ov.id, ov.presentation
