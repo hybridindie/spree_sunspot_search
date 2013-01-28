@@ -6,7 +6,6 @@ module Spree
         include ActionView::Helpers::NumberHelper
         attr_accessor :search_param
         attr_accessor :search_condition
-        attr_accessor :display_name
         attr_accessor :values
         attr_accessor :param_type
 
@@ -29,10 +28,6 @@ module Spree
 
         def search_condition
           @search_condition
-        end
-
-        def display_param
-          display_name.gsub(' ', '').underscore
         end
 
         def html_values
@@ -58,7 +53,6 @@ module Spree
 
         def finalize!
           raise ArgumentError.new("search_param is nil") if search_param.nil?
-          raise ArgumentError.new("display_name is nil") if display_name.nil?
           @param_type ||= values[0].class unless values.empty?
         end
       end
