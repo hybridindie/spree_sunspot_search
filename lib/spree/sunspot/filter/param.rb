@@ -15,7 +15,7 @@ module Spree
 
         def to_param
           value = @conditions.collect{|condition| condition.to_param}.join(';')
-          "#{display_name.downcase}=#{value}"
+          "#{search_param}=#{value}"
         end
 
         def method_missing(method, *args)
