@@ -48,9 +48,9 @@ module Spree
         hits = []
         if products_search.total > 0
           hits = products_search.hits.collect{|hit| hit.primary_key.to_i}
-          base_scope = base_scope.where ["#{Spree::Product.table_name}.id in (?)", hits]
+          base_scope = base_scope.where( ["#{Spree::Product.table_name}.id in (?)", hits] )
         else
-          base_scope = base_scope.where ["#{Spree::Product.table_name}.id = -1"]
+          base_scope = base_scope.where( ["#{Spree::Product.table_name}.id = -1"] )
         end
         products_scope = @product_group.apply_on(base_scope)
         products_results = products_scope.includes([:images, :master]).page(1)
@@ -73,25 +73,29 @@ module Spree
         @solr_search = ::Sunspot.new_search(Spree::Product) do |q|
           q.keywords(query)
 
-          Setup.filters.filters.each do |filter|
-            q.facet( filter.search_param )
-          end
-
-          q.paginate(:page => @properties[:page] || 1, :per_page => @properties[:per_page] || Spree::Config[:products_per_page])
-
+          q.paginate(page: @properties[:page] || 1, per_page: @properties[:per_page] || Spree::Config[:products_per_page])
         end
 
         unless @properties[:filters].blank?
-          conditions = Spree::Sunspot::Filter::Query.new(@properties[:filters])
-          @solr_search = conditions.build_search(@solr_search)
+          conditions = Spree::Sunspot::Filter::Query.new( @properties[:filters] )
+          @solr_search = conditions.build_search( @solr_search )
+        end
+
+        @solr_search.build do |query|
+          Setup.query_filters.filters.each do |filter|
+            query.facet(
+                filter.search_param,
+                exclude: property_exclusion( filter.exclusion )
+            )
+          end
         end
 
         @solr_search.execute
         if @solr_search.total > 0
           @hits = @solr_search.hits.collect{|hit| hit.primary_key.to_i}
-          base_scope = base_scope.where ["#{Spree::Product.table_name}.id in (?)", @hits]
+          base_scope = base_scope.where( ["#{Spree::Product.table_name}.id in (?)", @hits] )
         else
-          base_scope = base_scope.where ["#{Spree::Product.table_name}.id = -1"]
+          base_scope = base_scope.where( ["#{Spree::Product.table_name}.id = -1"] )
         end
 
         base_scope
@@ -104,6 +108,13 @@ module Spree
             params[:total_similar_products].to_i :
             Spree::Config[:total_similar_products]
       end
+
+      def property_exclusion(filter)
+        return nil if filter.blank?
+        prop = @properties[:filters].select{ |f| f == filter.to_s }
+        prop[filter] unless prop.empty?
+      end
+
     end
   end
 end

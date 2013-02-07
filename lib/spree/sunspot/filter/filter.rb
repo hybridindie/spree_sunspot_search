@@ -8,6 +8,7 @@ module Spree
         attr_accessor :search_condition
         attr_accessor :values
         attr_accessor :param_type
+        attr_accessor :exclusion
 
         def initialize
           @values = []
@@ -28,6 +29,10 @@ module Spree
 
         def search_condition
           @search_condition
+        end
+
+        def exclusion
+          @exclusion
         end
 
         def html_values
@@ -53,6 +58,7 @@ module Spree
 
         def finalize!
           raise ArgumentError.new("search_param is nil") if search_param.nil?
+          raise ArgumentError.new("search_condition is nil") if search_condition.nil?
           @param_type ||= values[0].class unless values.empty?
         end
       end

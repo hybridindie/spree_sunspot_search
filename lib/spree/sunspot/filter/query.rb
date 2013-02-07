@@ -3,27 +3,27 @@ module Spree
     module Filter
 
       class Query
-        attr_accessor :qparams
+        attr_accessor :query_params
 
         def initialize(query)
           unless query.nil?
-            @qparams = query.map do |key, value|
+            @query_params = query.map do |key, value|
               Param.new(key, value)
             end
           end
         end
 
         def build_search(search)
-          @qparams.each{|p| p.build_search_query(search) }
+          @query_params.each{|p| p.build_search_query(search) }
           search
         end
 
         def build_url
-          @qparams.collect{ |p| p.to_param }.join('|')
+          @query_params.collect{ |p| p.to_param }.join('|')
         end
 
         def has_filter?(filter, value)
-          @qparams.select{ |p| p.has_filter?(filter, value) }.any?
+          @query_params.select{ |p| p.has_filter?(filter, value) }.any?
         end
       end
 

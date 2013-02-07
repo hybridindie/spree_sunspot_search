@@ -5,7 +5,8 @@ module Spree
       class Condition
         attr_accessor :value
         attr_accessor :condition_type
-        attr_accessor :source
+        attr_accessor :exclusion
+        attr_accessor :field_param
 
         GREATER_THAN = 1
         LESS_THAN = 2
@@ -17,7 +18,7 @@ module Spree
         end
 
         def initialize(source, pcondition)
-          @source = source
+          @field_param = source
           range = pcondition.split(',')
           if range.size > 1
             if range[1] == '*'
@@ -39,11 +40,11 @@ module Spree
         def to_param
           case condition_type
             when GREATER_THAN
-              "#{value.to_i.to_s},*"
+              "#{value},*"
             when LESS_THAN
-              "*,#{value.to_i.to_s}"
+              "*,#{value}"
             when BETWEEN
-              "#{value.first.to_i.to_s},#{value.last.to_i.to_s}"
+              "#{value.first},#{value.last}"
             when EQUAL
               value.to_s
           end
@@ -52,13 +53,13 @@ module Spree
         def build_search_query(query)
           case condition_type
             when GREATER_THAN
-              query.with(source.source).greater_than(value)
+              query.with(field_param.source).greater_than(value)
             when LESS_THAN
-              query.with(source.source).less_than(value)
+              query.with(field_param.source).less_than(value)
             when BETWEEN
-              query.with(source.source).between(value)
+              query.with(field_param.source).between(value)
             when EQUAL
-              query.with(source.source, value)
+              query.with(field_param.source, value)
           end
           query
         end

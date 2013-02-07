@@ -9,8 +9,7 @@ module Spree
         def initialize(source, pcondition)
           @source = source
           pconditions = pcondition.split(';')
-          this = self
-          @conditions = pconditions.map{|p| Condition.new(this, p)}
+          @conditions = pconditions.map{|p| Condition.new(self, p)}
         end
 
         def to_param
@@ -27,7 +26,7 @@ module Spree
         end
 
         def has_filter?(filter, value)
-          @source == filter and @conditions.select{|c| c.to_param == value}.any?
+          @source == filter && @conditions.select{|c| c.to_param == value}.any?
         end
 
         def build_search_query(search)
@@ -35,12 +34,12 @@ module Spree
             if @conditions.size > 0
               query.all_of do |cond|
                 @conditions.each do |condition|
-                  condition.build_search_query(cond) if Setup.filters.select{ |f| f.search_param == condition.value }.first.search_condition == :all
+                  condition.build_search_query(cond) if wants_all?
                 end
 
                 query.any_of do |cond|
                   @conditions.each do |condition|
-                    condition.build_search_query(cond) if Setup.filters.select{ |f| f.search_param == condition.value }.first.search_condition == :any
+                    condition.build_search_query(cond) if wants_any?
                   end
                 end
 
@@ -54,6 +53,14 @@ module Spree
           search
         end
 
+        private
+        def wants_any?
+          Setup.query_filters.select{ |f| f.search_param == condition.value }.first.search_condition.eql?( :any )
+        end
+
+        def wants_all?
+          Setup.query_filters.select{ |f| f.search_param == condition.value }.first.search_condition.eql?( :all )
+        end
       end
 
     end
