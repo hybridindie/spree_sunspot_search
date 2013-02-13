@@ -73,6 +73,9 @@ module Spree
         @solr_search = ::Sunspot.new_search(Spree::Product) do |q|
           q.keywords(query)
 
+          q.order_by(
+              ordering_property.flatten.first,
+              ordering_property.flatten.last)
           q.paginate(page: @properties[:page] || 1, per_page: @properties[:per_page] || Spree::Config[:products_per_page])
         end
 
@@ -104,6 +107,7 @@ module Spree
       def prepare(params)
         super
         @properties[:filters] = params[:s] || params['s'] || []
+        @properties[:order_by] = params[:order_by] || params['order_by'] || []
         @properties[:total_similar_products] = params[:total_similar_products].to_i > 0 ?
             params[:total_similar_products].to_i :
             Spree::Config[:total_similar_products]
@@ -113,6 +117,11 @@ module Spree
         return nil if filter.blank?
         prop = @properties[:filters].select{ |f| f == filter.to_s }
         prop[filter] unless prop.empty?
+      end
+
+      def ordering_property
+        @properties[:order_by] = @properties[:order_by].empty? ? %w(score desc) : @properties[:order_by].split(',')
+        @properties[:order_by].flatten
       end
 
     end

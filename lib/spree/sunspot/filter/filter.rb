@@ -41,8 +41,7 @@ module Spree
             values.collect do |range|
               if range.first == 0
                 { :display => "Under #{number_to_currency(range.last, :precision => 0)}", :value => "#{range.first},#{range.last}" }
-              #TODO: needs removed we are no longer using IGNORE_MAX
-              elsif range.last == Spree::Sunspot::Setup::IGNORE_MAX
+              elsif range.last == 0
                 { :display => "#{number_to_currency(range.first, :precision => 0)}+", :value => "#{range.first},*" }
               else
                 { :display => "#{number_to_currency(range.first, :precision => 0)} - #{number_to_currency(range.last, :precision => 0)}",
