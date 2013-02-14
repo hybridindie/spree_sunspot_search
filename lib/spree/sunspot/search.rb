@@ -86,10 +86,21 @@ module Spree
 
         @solr_search.build do |query|
           Setup.query_filters.filters.each do |filter|
-            query.facet(
-                filter.search_param,
-                exclude: property_exclusion( filter.exclusion )
-            )
+            if filter.values.any? && filter.values.first.is_a?(Range)
+              query.facet(filter.search_param) do
+                filter.values.each do |value|
+                  row(value) do
+                    with(filter.search_param, value)
+                  end
+                end
+              end
+            else
+              query.facet(
+                  filter.search_param,
+                  exclude: property_exclusion( filter.exclusion )
+              )
+            end
+
           end
         end
 
