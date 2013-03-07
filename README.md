@@ -13,31 +13,42 @@ I make the assumption that you have a functioning Spree store and are just exten
 
 Add spree_sunspot_search to your Gemfile and run bundler.
 
-`gem 'spree_sunspot_search', git: 'git://github.com/jbrien/spree_sunspot_search.git'`
+```ruby
+gem 'spree_sunspot_search', git: 'git://github.com/jbrien/spree_sunspot_search.git'
+```
 
 add the following to the Gemfile if you are not using another solr install locally for testing and development. The rake tasks for starting and stop this for development are included automatically for your use.
 
-	group :test, :development do
-		gem 'sunspot_solr'
-	end
-
+```ruby
+group :test, :development do
+    gem 'sunspot_solr'
+end
+```
 
 Install the solr.yml file from Sunspot.
 
-`rails g sunspot_rails:install`
+```ruby
+rails g sunspot_rails:install
+```
 
-`rails g spree_sunspot_search:install`
+```ruby
+rails g spree_sunspot_search:install
+```
 
 Running
 =======
 
 Start up Solr (bundled with Sunspot's install)
 
-`rake sunspot:solr:run`
+```ruby
+rake sunspot:solr:run
+```
 
 Build the index for the first time
 
-`rake sunspot:reindex`
+```ruby
+rake sunspot:reindex
+```
 
 Setup and Customise the Index and Filters/Facets
 ------------------------------------------------
@@ -48,18 +59,19 @@ The meat of this extension is in the spree_sunspot_filters.rb initializers file.
 
 search_param  is the field in the index that you want to be treated as a facet.
 search_condition is the conjunction / disjunction to use. Acceptable values are :all / :any (At this time you :any is evaluated against the result of :all) as seen below
-`
-  condition.all_of do
+```ruby
+condition.all_of do
     filter_all_condition
     condition.any_of do
       filter_any_conditions
     end
-  end
-`
+end
+```
 value is an array of fixed values for a filter. This is best used with Pricing as seen below.
 
 Ranges are supported in values and translated to Solr's search. Zeros (0) are translated to stars(*) to allow for min/max results
-`
+
+```ruby
 filters.add do |f|
     f.search_param = 'price'
     f.search_condition = :all
@@ -69,26 +81,32 @@ filters.add do |f|
         51..75,
         76..0 ]}
 end
-`
+```
 
 Performing the Searches within Spree
 ------------------------------------
 
 Setup a Spree Searcher with
 
-`@searcher = Spree::Config.searcher_class.new(params)`
+```ruby
+@searcher = Spree::Config.searcher_class.new(params)
+```ruby
 
 Then retrieve the products from Solr
 
-`@products = @searcher.retrieve_products`
+```ruby
+@products = @searcher.retrieve_products
+```
 
 This returns the Solr results.
 
--please note below is going to be changing and simplified greatly-
+_please note below is going to be changing and simplified greatly_
 
 Sunspot returns a lot more information with the results which have been made available with the solr_search method
 
-`@searcher.solr_search`
+```ruby
+@searcher.solr_search
+```
 
 Pagination
 ----------
@@ -99,32 +117,40 @@ Showing and Navigation through Facets
 -------------------------------------
 Facets views based on default index and using HAML for clarity
 
-`
+```ruby
 - @searcher.solr_search.facet(:taxon_ids).rows.each do |row|
   %div
     = link_to( nested_taxons_path( @taxon.permalink, s: { category_ids: row.value } ) ) do
       = row.instance.name
       = row.count
-`
+```
 
 We pull the facets for the results using Sunspot's facet method. Spree Sunspot Search expects a Hash with an 's' key to store the facets to be searched against. Such as:
 
-`s: { taxon_ids: 1 }`
+```ruby
+s: { taxon_ids: 1 }
+```
 
 values can also be an array
 
-`s: { taxon_ids: [ 1, 2, 4 ] }`
+```ruby
+s: { taxon_ids: [ 1, 2, 4 ] }
+```
 
 you obviously can have multiple facets too.
 
-`s: { taxon_ids: [ 1, 2, 4 ], price: 0..25 }`
+```ruby
+s: { taxon_ids: [ 1, 2, 4 ], price: 0..25 }
+```ruby
 
 Sorting
 -------
 
 Spree Sunspot Search looks for an :order_by param for sorting. It must have a value relating to an indexed field and direction comma separated.
 
-`order_by: 'taxon_ids, asc'`
+```ruby
+order_by: 'taxon_ids, asc'
+```
 
 asc and desc are the acceptable directions; ascending and descending respectively
 
