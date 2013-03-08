@@ -14,7 +14,7 @@ I make the assumption that you have a functioning Spree store and are just exten
 Add spree_sunspot_search to your Gemfile and run bundler.
 
 ```ruby
-gem 'spree_sunspot_search', git: 'git://github.com/jbrien/spree_sunspot_search.git'
+gem 'spree_sunspot', github: 'jbrien/spree_sunspot_search'
 ```
 
 add the following to the Gemfile if you are not using another solr install locally for testing and development. The rake tasks for starting and stop this for development are included automatically for your use.
@@ -25,14 +25,10 @@ group :test, :development do
 end
 ```
 
-Install the solr.yml file from Sunspot.
+Install the sunspot.yml file from Sunspot and the spree_sunspot and spree_sunspot_filters initializers.
 
 ```ruby
-rails g sunspot_rails:install
-```
-
-```ruby
-rails g spree_sunspot_search:install
+rails g spree:sunspot:install
 ```
 
 Running
