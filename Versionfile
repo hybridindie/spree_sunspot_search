@@ -1,2 +1,3 @@
 "0.7.0" => { :ref => "dbeb34c149c7d7ecc3f94820e0ae4a9e4798e13a" }
 "1.1.x" => { :branch => "spree-1.1" }
+"1.2.x" => { :branch => "master" }
