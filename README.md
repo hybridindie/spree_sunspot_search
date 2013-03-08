@@ -86,7 +86,7 @@ Setup a Spree Searcher with
 
 ```ruby
 @searcher = Spree::Config.searcher_class.new(params)
-```ruby
+```
 
 Then retrieve the products from Solr
 
@@ -137,7 +137,7 @@ you obviously can have multiple facets too.
 
 ```ruby
 s: { taxon_ids: [ 1, 2, 4 ], price: 0..25 }
-```ruby
+```
 
 Sorting
 -------
