@@ -1,4 +1,4 @@
-Spree::Sunspot::Setup.filters do |filters|
+Spree::Sunspot::Setup.query_filters do |filters|
 
   # Ranges can be Dates, Ints, or Floats
   # filters.add do |f|
