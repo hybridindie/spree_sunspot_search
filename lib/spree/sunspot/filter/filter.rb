@@ -4,12 +4,13 @@ module Spree
 
       class Filter
         include ActionView::Helpers::NumberHelper
-        attr_accessor :search_param
-        attr_accessor :search_condition
-        attr_accessor :values
-        attr_accessor :param_type
+
         attr_accessor :display_name
         attr_accessor :exclusion
+        attr_accessor :param_type
+        attr_accessor :search_condition
+        attr_accessor :search_param
+        attr_accessor :values
 
         def initialize
           @values = []
@@ -39,6 +40,10 @@ module Spree
 
         def html_values
           case param_type.to_s
+          when "Array"
+            values.collect do |value|
+              { :display => value[0], :value => value[1] }
+            end
           when "Range"
             values.collect do |range|
               if range.first == 0
