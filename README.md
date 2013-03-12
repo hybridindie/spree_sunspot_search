@@ -21,7 +21,7 @@ add the following to the Gemfile if you are not using another solr install local
 
 ```ruby
 group :test, :development do
-    gem 'sunspot_solr'
+  gem 'sunspot_solr'
 end
 ```
 
@@ -46,49 +46,52 @@ Build the index for the first time
 rake sunspot:reindex
 ```
 
-Setup and Customise the Index and Filters/Facets
+Setup and Customize the Index and Filters/Facets
 ------------------------------------------------
 
-The spree_sunspot.rb initializer is a simple Sunspot definition just as defined by [Sunspot](https://github.com/sunspot/sunspot). This adds the searchable method to the Spree::Product model
+The spree_sunspot.rb initializer is a simple Sunspot definition just as defined by [Sunspot](https://github.com/sunspot/sunspot). This adds the searchable method to the Spree::Product model.
 
-The meat of this extension is in the spree_sunspot_filters.rb initializers file. Here are all your facets / filtering setups.
+The meat of this extension is in the spree_sunspot_filters.rb initializers file. Here are all your facets / filtering are setup.
 
-search_param  is the field in the index that you want to be treated as a facet.
-search_condition is the conjunction / disjunction to use. Acceptable values are :all / :any (At this time you :any is evaluated against the result of :all) as seen below
+* search_param - is the field in the index that you want to be treated as a facet.
+* search_condition - is the conjunction / disjunction to use. Acceptable values are :all / :any (At this time your :any is evaluated against the result of :all) as seen below.
+
 ```ruby
 condition.all_of do
-    filter_all_condition
-    condition.any_of do
-      filter_any_conditions
-    end
+  filter_all_condition
+  condition.any_of do
+    filter_any_conditions
+  end
 end
 ```
-value is an array of fixed values for a filter. This is best used with Pricing as seen below.
 
-Ranges are supported in values and translated to Solr's search. Zeros (0) are translated to stars(*) to allow for min/max results
+Value is an array of fixed values for a filter. This is best used with Pricing as seen below.
+
+Ranges are supported in values and translated to Solr's search. Zeros (0) are translated to stars(*) to allow for min/max results.
 
 ```ruby
 filters.add do |f|
-    f.search_param = 'price'
-    f.search_condition = :all
-    f.values {[
-        0..25,
-        26..50,
-        51..75,
-        76..0 ]}
+  f.search_param = 'price'
+  f.search_condition = :all
+  f.values {[
+    0..25,
+    26..50,
+    51..75,
+    76..0
+  ]}
 end
 ```
 
 Performing the Searches within Spree
 ------------------------------------
 
-Setup a Spree Searcher with
+Setup a Spree Searcher with:
 
 ```ruby
 @searcher = Spree::Config.searcher_class.new(params)
 ```
 
-Then retrieve the products from Solr
+Then retrieve the products from Solr:
 
 ```ruby
 @products = @searcher.retrieve_products
@@ -148,7 +151,7 @@ Spree Sunspot Search looks for an :order_by param for sorting. It must have a va
 order_by: 'taxon_ids, asc'
 ```
 
-asc and desc are the acceptable directions; ascending and descending respectively
+asc and desc are the acceptable directions; ascending and descending respectively.
 
 TODOs
 =====
@@ -160,10 +163,13 @@ TODOs
 * Inclusion of Failover support for replicated Solr servers
 * Support for Solr 4.x (and subsequent Sunspot contribs)
 
-
 Testing
 =======
 
-TODO and a lot of it
+```shell
+bundle
+bundle exec rake test_app
+bundle exec rspec spec
+```
 
-Copyright (c) 2012-13 John Brien Dilts, released under the New BSD License
+Copyright (c) 2012-13 John Brien Dilts, released under the New BSD License.
