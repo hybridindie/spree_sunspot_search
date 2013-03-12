@@ -8,6 +8,7 @@ module Spree
         attr_accessor :search_condition
         attr_accessor :values
         attr_accessor :param_type
+        attr_accessor :display_name
         attr_accessor :exclusion
 
         def initialize
@@ -20,7 +21,7 @@ module Spree
         end
 
         def display?
-          !values.empty?
+          values.present?
         end
 
         def search_param
