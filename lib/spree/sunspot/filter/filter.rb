@@ -17,6 +17,7 @@ module Spree
 
         def values(&blk)
           @values = yield if block_given?
+          @values = @values.call if @values.respond_to?(:call) # Evaluates any Proc passed to values.
           @values
         end
 
