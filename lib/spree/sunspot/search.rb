@@ -8,10 +8,6 @@ module Spree
   module Sunspot
     class Search < Spree::Core::Search::Base
 
-      def query
-        @filter_query
-      end
-
       def solr_search
         @solr_search
       end
@@ -60,6 +56,7 @@ module Spree
       end
 
       protected
+
       def get_base_scope
         base_scope = Spree::Product.active
         base_scope = base_scope.in_taxon(taxon) unless taxon.blank?

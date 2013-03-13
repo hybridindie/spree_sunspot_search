@@ -12,7 +12,7 @@
         <ul class="filter_choices">
           <% filter.html_values.each_with_index do |hv, index| %>
             <li class="nowrap">
-              <% selected = (!(@searcher and @searcher.query).nil? and @searcher.query.has_filter?(filter, hv[:value])) %>
+              <% selected = params[:s][filter.search_param].include? hv[:value].to_s if params[:s] and params[:s][filter.search_param].present? %>
               <% checkbox_id = "#{filter.search_param}_#{index}" %>
               <label class="filter_field" for="<%= checkbox_id %>">
                 <%= check_box_tag "s[#{filter.search_param}][]", hv[:value], selected, { :id => checkbox_id } %>
