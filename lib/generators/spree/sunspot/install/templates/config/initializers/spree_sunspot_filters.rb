@@ -30,11 +30,11 @@ Spree::Sunspot::Setup.query_filters do |filters|
   #   f.display_name = 'Categories'
   #   f.search_condition = :any
   #   f.search_param = 'category_ids'
-  #   f.values { 
+  #   f.values {[
   #     Proc.new {
   #       Spree::Taxon.select{ |t| t.root.name.eql?('Categories') and t != t.root }.collect{ |taxon| [taxon.name, taxon.id] }
   #     }
-  #   }
+  #   ]}
   # end
 
 end

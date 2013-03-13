@@ -25,5 +25,5 @@
     <% end %>
   <% end %>
   <%= submit_tag I18n.t(:search), :class => 'filter_submit' %>
-  <%= link_to I18n.t(:clear_all), '#', :class => 'filter_clear_all' %>
+  <%= link_to I18n.t(:clear_all), "javascript: $('.filter_choices input').attr('checked', false);", :class => 'filter_clear_all' %>
 <% end %>

@@ -18,7 +18,6 @@ module Spree
 
         def values(&blk)
           @values = yield if block_given?
-          @values = @values.call if @values.respond_to?(:call) # Evaluates any Proc passed to values.
           @values
         end
 
@@ -40,8 +39,8 @@ module Spree
 
         def html_values
           case param_type.to_s
-          when "Array"
-            values.collect do |value|
+          when "Proc"
+            values.first.call.collect do |value|
               { :display => value[0], :value => value[1] }
             end
           when "Range"
