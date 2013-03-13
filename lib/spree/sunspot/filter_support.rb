@@ -52,9 +52,9 @@ module Spree
           object = instance_variable_get('@'+controller_name.singularize)
           if object
             case controller_name
-              when "products"
+              when "spree/products"
                 hash_for_product_path(object)
-              when "taxons"
+              when "spree/taxons"
                 hash_for_taxon_short_path(object)
             end
           else

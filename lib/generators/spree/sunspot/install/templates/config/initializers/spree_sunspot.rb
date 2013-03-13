@@ -6,7 +6,7 @@ Spree::Sunspot::Setup.configure do
     integer :taxon_ids, :references => Spree::Taxon, :multiple => true do
       taxons.collect{|t| t.self_and_ancestors.map(&:id) }.flatten
     end
-    string :taxon_names, :multiple => true do
+    string :taxon_names, :references => Spree::Taxon, :multiple => true do
       taxons.collect{|t| t.self_and_ancestors.map(&:name) }.flatten
     end
     float :price

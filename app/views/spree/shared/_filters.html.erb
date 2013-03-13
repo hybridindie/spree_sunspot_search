@@ -1,0 +1,29 @@
+<% url_options = { "action" => "filter" }.merge(params)
+  url_options.merge!(controller.filter_url_settings) if controller.respond_to?(:filter_url_settings)
+%>
+<%= form_tag(url_options, :method => :get, :id => "filter") do %>
+  <% Spree::Sunspot::Setup.query_filters.filters.each do |filter| %>
+    <% next unless filter.display? %>
+    <% if lookup_context.find_all("spree/filters/_#{filter.search_param}").any? %>
+      <%= render :partial => "spree/filters/#{filter.search_param}", :locals => { :filter => filter }%>
+    <% else %>
+      <div class="filter" data-field="<%= filter.search_param %>">
+        <h6 class="filter-title"><%= t :shop_by_taxonomy, :taxonomy => filter.display_name %></h6>
+        <ul class="filter_choices">
+          <% filter.html_values.each_with_index do |hv, index| %>
+            <li class="nowrap">
+              <% selected = params[:s][filter.search_param].include? hv[:value].to_s if params[:s] and params[:s][filter.search_param].present? %>
+              <% checkbox_id = "#{filter.search_param}_#{hv[:value]}" %>
+              <label class="filter_field" for="<%= checkbox_id %>">
+                <%= check_box_tag "s[#{filter.search_param}][]", hv[:value], selected, { :id => checkbox_id } %>
+              </label>
+              <label class="filter_value nowrap"><%= hv[:display] %></label>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+  <% end %>
+  <%= submit_tag I18n.t(:search), :class => 'filter_submit' %>
+  <%= link_to I18n.t(:clear_all), "javascript: $('.filter_choices input').attr('checked', false);", :class => 'filter_clear_all' %>
+<% end %>
