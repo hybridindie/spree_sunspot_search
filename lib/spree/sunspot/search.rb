@@ -27,8 +27,8 @@ module Spree
           end
         end
 
-        curr_page = page || 1
-
+        curr_page = @properties[:page] || 1
+        per_page  = @properties[:per_page] || Spree::Config[:products_per_page]
         @products = @products_scope.includes([:master]).page(curr_page).per(per_page)
       end
 
@@ -73,7 +73,10 @@ module Spree
           q.order_by(
               ordering_property.flatten.first,
               ordering_property.flatten.last)
-          q.paginate(page: @properties[:page] || 1, per_page: @properties[:per_page] || Spree::Config[:products_per_page])
+          # Use a high per_page here so that all results are retrieved when setting base_scope at the end of this method.
+          # Otherwise you'll never have more than the first page of results from here returned, when pagination is done
+          # during the retrieve_products method.
+          q.paginate(page: 1, per_page: Spree::Product.count)
         end
 
         unless @properties[:filters].blank?

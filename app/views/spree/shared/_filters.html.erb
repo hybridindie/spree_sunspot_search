@@ -8,7 +8,7 @@
       <%= render :partial => "spree/filters/#{filter.search_param}", :locals => { :filter => filter }%>
     <% else %>
       <div class="filter" data-field="<%= filter.search_param %>">
-        <h6 class="filter-title"> <%= filter.display_name %> </h6>
+        <h6 class="filter-title"><%= t :shop_by_taxonomy, :taxonomy => filter.display_name %></h6>
         <ul class="filter_choices">
           <% filter.html_values.each_with_index do |hv, index| %>
             <li class="nowrap">
