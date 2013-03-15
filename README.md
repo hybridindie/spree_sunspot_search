@@ -172,4 +172,5 @@ bundle exec rake test_app
 bundle exec rspec spec
 ```
 
+Inspired and Expanded from My Original Extension and The work begun by [five18pm](https://github.com/five18pm/spree-sunspot)
 Copyright (c) 2012-13 John Brien Dilts, released under the New BSD License.
