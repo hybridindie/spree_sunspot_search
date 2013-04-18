@@ -66,6 +66,7 @@ module Spree
         base_scope = add_search_scopes(base_scope)
       end
 
+      # TODO: This method is shit; clean it up John. At least you were paid to write this =P
       def get_products_conditions_for(base_scope, query)
         @solr_search = ::Sunspot.new_search(Spree::Product) do |q|
           q.keywords(query)
@@ -85,23 +86,7 @@ module Spree
         end
 
         @solr_search.build do |query|
-          Setup.query_filters.filters.each do |filter|
-            if filter.values.any? && filter.values.first.is_a?(Range)
-              query.facet(filter.search_param) do
-                filter.values.each do |value|
-                  row(value) do
-                    with(filter.search_param, value)
-                  end
-                end
-              end
-            else
-              query.facet(
-                  filter.search_param,
-                  exclude: property_exclusion( filter.exclusion )
-              )
-            end
-
-          end
+          build_facet_query(query)
         end
 
         @solr_search.execute
@@ -119,9 +104,37 @@ module Spree
         super
         @properties[:filters] = params[:s] || params['s'] || []
         @properties[:order_by] = params[:order_by] || params['order_by'] || []
+        @properties[:location_coords] = params[:location_coords] || params['location_coords'] || nil
         @properties[:total_similar_products] = params[:total_similar_products].to_i > 0 ?
             params[:total_similar_products].to_i :
             Spree::Config[:total_similar_products]
+      end
+
+      def build_facet_query(query)
+        Setup.query_filters.filters.each do |filter|
+          if filter.values.any? && filter.values.first.is_a?(Range)
+            query.facet(filter.search_param) do
+              filter.values.each do |value|
+                row(value) do
+                  with(filter.search_param, value)
+                end
+              end
+            end
+          else
+            query.facet(
+                filter.search_param,
+                exclude: property_exclusion( filter.exclusion )
+            )
+          end
+          # Temporary hack to allow for geodistancing
+          unless @properties[:location_coords].nil?
+            coords = @properties[:location_coords].split(',')
+            coords.flatten
+            lat = coords[0]
+            long = coords[1]
+            query.with(:location).in_radius( lat, long, 50 )
+          end
+        end
       end
 
       def property_exclusion(filter)
