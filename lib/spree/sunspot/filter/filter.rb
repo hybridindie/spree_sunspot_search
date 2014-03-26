@@ -41,22 +41,24 @@ module Spree
           case param_type.to_s
           when "Proc"
             values.first.call.collect do |value|
-              { :display => value[0], :value => value[1] }
+              { :display => value[0], :value => value[1], :orig_value => value[1] }
             end
           when "Range"
             values.collect do |range|
               if range.first == 0
-                { :display => "Under #{number_to_currency(range.last, :precision => 0)}", :value => "#{range.first},#{range.last}" }
+                { :display => "Under #{number_to_currency(range.last, :precision => 0)}",
+                  :value => "#{range.first},#{range.last}", :orig_value => range }
               elsif range.last == 0
-                { :display => "#{number_to_currency(range.first, :precision => 0)}+", :value => "#{range.first},*" }
+                { :display => "#{number_to_currency(range.first, :precision => 0)}+",
+                  :value => "#{range.first},*", :orig_value => range }
               else
                 { :display => "#{number_to_currency(range.first, :precision => 0)} - #{number_to_currency(range.last, :precision => 0)}",
-                  :value => "#{range.first},#{range.last}" }
+                  :value => "#{range.first},#{range.last}", :orig_value => range }
               end
             end
           else
             values.collect do |value|
-              { :display => value, :value => value }
+              { :display => value, :value => value, :orig_value => value }
             end
           end
         end
