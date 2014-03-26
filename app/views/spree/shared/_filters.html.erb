@@ -8,7 +8,7 @@
       <%= render :partial => "spree/filters/#{filter.search_param}", :locals => { :filter => filter }%>
     <% else %>
       <div class="filter" data-field="<%= filter.search_param %>">
-        <h6 class="filter-title"><%= t :shop_by_taxonomy, :taxonomy => filter.display_name %></h6>
+        <h6 class="filter-title"><%= Spree.t :shop_by_taxonomy, :taxonomy => filter.display_name %></h6>
         <ul class="filter_choices">
           <% filter.html_values.each_with_index do |hv, index| %>
             <li class="nowrap">
@@ -24,6 +24,6 @@
       </div>
     <% end %>
   <% end %>
-  <%= submit_tag I18n.t(:search), :class => 'filter_submit' %>
-  <%= link_to I18n.t(:clear_all), "javascript: $('.filter_choices input').attr('checked', false);", :class => 'filter_clear_all' %>
+  <%= submit_tag Spree.t(:search), :class => 'filter_submit' %>
+  <%= link_to Spree.t(:clear_all), "javascript: $('.filter_choices input').attr('checked', false);", :class => 'filter_clear_all' %>
 <% end %>
