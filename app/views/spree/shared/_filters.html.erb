@@ -16,8 +16,8 @@
               <% checkbox_id = "#{filter.search_param}_#{hv[:value]}" %>
               <label class="filter_field" for="<%= checkbox_id %>">
                 <%= check_box_tag "s[#{filter.search_param}][]", hv[:value], selected, { :id => checkbox_id } %>
+                <%= hv[:display] %>
               </label>
-              <label class="filter_value nowrap"><%= hv[:display] %></label>
             </li>
           <% end %>
         </ul>
