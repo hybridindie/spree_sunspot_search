@@ -8,7 +8,7 @@ module Spree
 
         def initialize(source, pcondition)
           @source = source
-          pconditions = pcondition.split(';')
+          pconditions = String === pcondition ? pcondition.split(';') : pcondition
           @conditions = pconditions.map{|p| Condition.new(self, p)}
         end
 
