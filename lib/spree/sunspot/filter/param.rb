@@ -44,9 +44,6 @@ module Spree
                 end
 
               end
-            else
-
-              @conditions[0].build_search_query(query)
             end
           end
 
