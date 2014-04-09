@@ -52,7 +52,7 @@ module Spree
 
         private
         def wants_any?
-          filter = Setup.query_filters.filters.select{ |f| f.search_param == self.source }.first
+          filter = Setup.query_filters.filters.select{ |f| f.search_param.to_s == self.source.to_s }.first
           if filter
             filter.search_condition.eql?( :any )
           else
@@ -61,7 +61,7 @@ module Spree
         end
 
         def wants_all?
-          filter = Setup.query_filters.filters.select{ |f| f.search_param == self.source }.first
+          filter = Setup.query_filters.filters.select{ |f| f.search_param.to_s == self.source.to_s }.first
           if filter
             filter.search_condition.eql?( :all )
           else
