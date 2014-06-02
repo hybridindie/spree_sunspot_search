@@ -8,22 +8,25 @@
       <%= render :partial => "spree/filters/#{filter.search_param}", :locals => { :filter => filter }%>
     <% else %>
       <div class="filter" data-field="<%= filter.search_param %>">
-        <h6 class="filter-title"><%= t :shop_by_taxonomy, :taxonomy => filter.display_name %></h6>
+        <h6 class="filter-title"><%= Spree.t :shop_by_taxonomy, :taxonomy => filter.display_name %></h6>
         <ul class="filter_choices">
+          <% solr_search = @searcher.solr_search %>
+          <% solr_rows = solr_search.facet(filter.search_param).rows %>
           <% filter.html_values.each_with_index do |hv, index| %>
             <li class="nowrap">
               <% selected = params[:s][filter.search_param].include? hv[:value].to_s if params[:s] and params[:s][filter.search_param].present? %>
               <% checkbox_id = "#{filter.search_param}_#{hv[:value]}" %>
-              <label class="filter_field" for="<%= checkbox_id %>">
+              <% count = solr_rows.find{|r| r.value == hv[:orig_value]}.try(:count) || 0 %>
+              <label class="filter_field <%= count > 0 ? 'nonzero' : 'zero' %>" for="<%= checkbox_id %>">
                 <%= check_box_tag "s[#{filter.search_param}][]", hv[:value], selected, { :id => checkbox_id } %>
+                <%= "#{hv[:display]}<span class='count'>(#{count})</span>".html_safe %>
               </label>
-              <label class="filter_value nowrap"><%= hv[:display] %></label>
             </li>
           <% end %>
         </ul>
       </div>
     <% end %>
   <% end %>
-  <%= submit_tag I18n.t(:search), :class => 'filter_submit' %>
-  <%= link_to I18n.t(:clear_all), "javascript: $('.filter_choices input').attr('checked', false);", :class => 'filter_clear_all' %>
+  <%= submit_tag Spree.t(:search), :class => 'filter_submit' %>
+  <%= link_to Spree.t(:clear_all), "javascript: $('.filter_choices input').attr('checked', false);", :class => 'filter_clear_all' %>
 <% end %>

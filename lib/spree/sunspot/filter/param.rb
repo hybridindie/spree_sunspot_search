@@ -8,7 +8,7 @@ module Spree
 
         def initialize(source, pcondition)
           @source = source
-          pconditions = pcondition.split(';')
+          pconditions = String === pcondition ? pcondition.split(';') : pcondition
           @conditions = pconditions.map{|p| Condition.new(self, p)}
         end
 
@@ -44,9 +44,6 @@ module Spree
                 end
 
               end
-            else
-
-              @conditions[0].build_search_query(query)
             end
           end
 
@@ -55,11 +52,22 @@ module Spree
 
         private
         def wants_any?
-          Setup.query_filters.select{ |f| f.search_param == condition.value }.first.search_condition.eql?( :any )
+          filter = Setup.query_filters.filters.select{ |f| f.search_param.to_s == self.source.to_s }.first
+          if filter
+            filter.search_condition.eql?( :any )
+          else
+            false
+          end
         end
 
         def wants_all?
-          Setup.query_filters.select{ |f| f.search_param == condition.value }.first.search_condition.eql?( :all )
+          filter = Setup.query_filters.filters.select{ |f| f.search_param.to_s == self.source.to_s }.first
+          if filter
+            filter.search_condition.eql?( :all )
+          else
+            # if filter is not present by default take it as :all
+            true
+          end
         end
       end
 
