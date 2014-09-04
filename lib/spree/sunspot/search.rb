@@ -71,9 +71,7 @@ module Spree
         @solr_search = ::Sunspot.new_search(Spree::Product) do |q|
           q.keywords(query)
 
-          q.order_by(
-              ordering_property.flatten.first,
-              ordering_property.flatten.last)
+          order(q, ordering_property)
           # Use a high per_page here so that all results are retrieved when setting base_scope at the end of this method.
           # Otherwise you'll never have more than the first page of results from here returned, when pagination is done
           # during the retrieve_products method.
@@ -147,7 +145,14 @@ module Spree
         @properties[:order_by] = @properties[:order_by].blank? ? %w(score desc) : @properties[:order_by].split(',')
         @properties[:order_by].flatten
       end
+      
+      private
 
+      def order(query, order_array)
+        while order_array.length >= 2 do
+          query.order_by(order_array.shift, order_array.shift)
+        end
+      end
     end
   end
 end
